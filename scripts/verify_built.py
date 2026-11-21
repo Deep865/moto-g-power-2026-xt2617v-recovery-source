@@ -43,8 +43,8 @@ def ck(label, ok, a=None, b=None):
     print(f"{label:34} {'OK' if ok else 'FAIL'}{extra}")
 
 def main():
-    built_p = sys.argv[1] if len(sys.argv) > 1 else r'C:\Users\<you>\MotoRoot\wsl-build\vendor_boot_14.img'
-    stock_p = sys.argv[2] if len(sys.argv) > 2 else r'C:\Users\<you>\MotoRoot\revert\vendor_boot_a.img'
+    built_p = sys.argv[1] if len(sys.argv) > 1 else r'C:\Users\Deep\MotoRoot\wsl-build\vendor_boot_14.img'
+    stock_p = sys.argv[2] if len(sys.argv) > 2 else r'C:\Users\Deep\MotoRoot\revert\vendor_boot_a.img'
     b = parse(built_p)
     s = parse(stock_p)
 

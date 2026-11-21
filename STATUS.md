@@ -17,10 +17,13 @@ Last updated: 2026-11-21.
 A14 fixes are in `scripts/10-build-14.1.sh` / `scripts/11-rebuild.sh` and are summarized
 in `BUILD.md`.
 
-## OrangeFox 14.1 (known-good binary)
+## OrangeFox R12.0 (known-good binary)
 
-The recovery that actually boots on this unit is an OrangeFox 14.1-based image from the
-XDA thread, rebuilt with the **phone’s own `vendor_dlkm` Focaltech FT8725 module**.
+The recovery that actually boots on this unit is an **OrangeFox R12.0** image from the
+XDA thread, rebuilt with the **phone’s own `vendor_dlkm` Focaltech FT8725 module**. The
+older “14.1-based” label was wrong; `REPRODUCE.md` and the R12.0 base are correct. The
+TWRP 14.1 source and the OrangeFox 14.1/16.0 source builds are newer controls, not the
+working daily recovery.
 
 - Base: `vegas_ofox.img` (OrangeFox R12.0 unofficial; DTB `183530` /
   `50cf2684…`, 1080×2388 panel modules).
@@ -46,24 +49,40 @@ LineageOS 23.2 microG (Android 16) is installed on `system_a` and boots:
 Flashing the GSI does **not** SIM/network unlock the modem. Bootloader unlock and SIM
 lock are independent; the lock lives in `md1img`.
 
-## OrangeFox 16.0 (in progress)
+## OrangeFox 16.0 (experimental, not a working recovery)
 
-`fox_16.0` is an Android 16 OrangeFox branch and is the intended source-built recovery
-for this A16 vendor.
+`fox_16.0` is an Android 16 OrangeFox branch. The build compiles and verifies, but the
+result is not a working recovery yet.
 
 - `orangefox_sync.sh --branch 16.0` completed successfully.
-- Tree copied to `device/motorola/vegas26`.
-- Stock 1080×2388 DSI panel modules added; stock FT8725 module replaces the wrong one in
-  all three module paths.
-- `lunch omni_vegas26-bp2a-eng` works (Android 16, `BP2A`).
-- Build fixes applied:
-  - `PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE := false` (magiskboot is 4K; A16 wants 16K),
-  - `TW_EXCLUDE_NANO := true` (terminfo copy races OrangeFox post-processing),
-  - obsolete `add_lunch_combo` lines removed from `vendorsetup.sh`.
-- Incremental `mka vendorbootimage -j16` running after the nano fix.
+- `lunch omni_vegas26-bp2a-eng`; build fixes: 4K/16K prebuilt page size, nano race,
+  `vendorsetup.sh`.
+- Built image `vendor_boot_ofox16.img`, SHA-256 `55c8175c…`; header/DTB/fragments PASS.
+- **16.0 platform + 16.0 recovery** (and the slim recovery): logo → fastboot; no kernel
+  log. The 16.0-built platform is the leading suspect.
+- **R12.0 platform + 16.0 recovery**: loads; Android boots; the 16.0 recovery only draws
+  the OrangeFox splash, never the menu. This is a userspace/theme failure.
+- The slim recovery removed the Chinese theme font; the font-kept test was invalid because
+  it also removed three panel modules (no splash, bootloop).
+- **Full 16.0 recovery on the R12.0 platform** is 57.45 MB and hits the bootloader size
+  limit (logo → fastboot). The size limit is between 55.57 MB (working R12.0) and
+  57.45 MB.
+- The old pstore panic is the TWRP 14.1 panic (initrd 54,896K), not a 16.0 log.
 
-Goal: a from-source image that boots with the same DTB, panel modules and stock FT8725
-module as the known-good 14.1 binary.
+Full details/hashes: docs repo `docs/05-ofox16.md`.
+
+## OrangeFox 14.1 source control
+
+`fox_14.1` sync completed after retrying past an AOSP Gitiles HTTP 429 quota. The build
+uses the A14 TWRP device tree. This is a newer control, not the exact working image; the
+working image is R12.0. The true source control is the 12.1/R12.0 branch.
+
+## SIM / modem
+
+`vegas-freedom` offline check/build on the stock `md1img_a` passed its audit for this
+`-4-3` unit, but **nothing was flashed**. Only `md1img_a` is ever flashed; never
+`md1img_b`/`lk`/`preloader`/`seccfg`/`gpt`/`nvram`/`nvdata`/`protect*`. Verification
+needs a non-Tracfone SIM. See docs `docs/07-modem-unlock.md` and `docs/06-sim-setup.md`.
 
 ## TWRP-branded variant
 

@@ -10,9 +10,11 @@ This is a research tree. Read `STATUS.md` before assuming any image is usable.
 | Target | State |
 |---|---|
 | TWRP 14.1 from the minimal manifest + this tree | builds, verifies, flashes; **userspace does not reach UI** on the A16 vendor |
-| OrangeFox 14.1 (known-good binary) | **works**: touch, `/data` decryption, backup/restore, MTP, ADB |
-| OrangeFox 16.0 from source (`fox_16.0`) | **in progress** — the intended source-built recovery |
-| TWRP-branded variant | later, after the OrangeFox 16.0 source build boots |
+| **OrangeFox R12.0 (12.1 branch) known-good binary** | **works**: touch, `/data` decryption, backup/restore, MTP, ADB |
+| OrangeFox 14.1 source (`fox_14.1`) | builds; **black screen / bootloop**; recovery userspace not usable |
+| OrangeFox 16.0 source (`fox_16.0`) | builds; 16.0 platform fails at the bootloader; recovery splash/no menu — experimental |
+| OrangeFox 12.1/R12.0 source (`fox_12.1`) | sync/build control; the true source of the working image |
+| TWRP-branded variant | later; TWRP 14.1 has its own userspace blocker, 16.0 is closer |
 
 The working binary recipe, hashes and full notes live in
 **https://github.com/Deep865/vegas26-recovery** (docs repo).

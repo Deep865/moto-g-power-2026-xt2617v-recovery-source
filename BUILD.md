@@ -92,8 +92,26 @@ Bring-up status is tracked in `STATUS.md`.
   copies it; the parallel copy fails at 67% with `cp: …/terminfo/… No such file or
   directory`. Nano is optional; excluding it removes the race.
 
+### 16.0 result
+
+The 16.0 build compiles and verifies, but the image is not a working recovery: the
+16.0-built platform fails at the bootloader, and the 16.0 recovery on the R12.0 platform
+only reaches the splash. Full results/hashes are in the docs repo `docs/05-ofox16.md`.
+
+## OrangeFox 14.1 source
+
+```bash
+./orangefox_sync.sh --branch 14.1 --path /root/fox_14.1
+# repo may hit AOSP Gitiles HTTP 429; retry with -j4:
+cd /root/fox_14.1 && repo sync -c -j4 --force-sync --no-clone-bundle --no-tags
+```
+
+The 14.1 build uses the A14 TWRP device tree (`/root/twrp/device/motorola/vegas26`) and
+is a newer control. The working image is **OrangeFox R12.0**; the true source control is
+the 12.1 branch.
+
 ## Known-good binary
 
-The OrangeFox 14.1-based image with the stock FT8725 module is documented in the docs
-repo (`https://github.com/Deep865/vegas26-recovery`), including the exact repack script
-and SHA-256. Use it as the fallback while the 16.0 source build is brought up.
+The **OrangeFox R12.0** image with the stock FT8725 module is documented in the docs repo
+(`https://github.com/Deep865/vegas26-recovery`), including the exact repack script and
+SHA-256. Use it as the fallback while the 14.1/16.0 source builds are brought up.
