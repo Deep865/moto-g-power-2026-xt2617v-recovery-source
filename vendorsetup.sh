@@ -1,4 +1,3 @@
-#HERE INCASE ITS NEEDED
-add_lunch_combo twrp_vegas26-user
-add_lunch_combo twrp_vegas26-userdebug
-add_lunch_combo twrp_vegas26-eng
+# AOSP 14+ uses COMMON_LUNCH_CHOICES in AndroidProducts.mk.
+# add_lunch_combo is obsolete and returns non-zero in the A16 envsetup,
+# which aborts build scripts that use `set -e`.
