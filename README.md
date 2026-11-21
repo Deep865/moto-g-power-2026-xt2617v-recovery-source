@@ -1,130 +1,72 @@
-# TWRP/OrangeFox Device Tree for moto g play 2026 (vegas26)
+# vegas26 recovery source — Moto G Power 2026 (`XT2617V`)
 
-=========================================
+Device tree, build scripts and status for recovery work on the MediaTek MT6835
+**moto g power - 2026** (`XT2617V`, Android codename `vegas26`, bootloader `vegas`).
 
-The **moto g play 2026** (codenamed **`vegas26`**) is a Motorola smartphone powered by the MediaTek Dimensity 6300 platform.
+This is a research tree. Read `STATUS.md` before assuming any image is usable.
 
-This tree is a **port based on the moto g 5g 2025 (`kansas`) device tree**, with vegas26-specific changes and fixes from the original vegas26 tree.
+## Status at a glance
 
-> Built with questionable amounts of caffeine, questionable amounts of debugging, and approximately 47 instances of staring at a build log wondering what the hell just happened. 🗿
+| Target | State |
+|---|---|
+| TWRP 14.1 from the minimal manifest + this tree | builds, verifies, flashes; **userspace does not reach UI** on the A16 vendor |
+| OrangeFox 14.1 (known-good binary) | **works**: touch, `/data` decryption, backup/restore, MTP, ADB |
+| OrangeFox 16.0 from source (`fox_16.0`) | **in progress** — the intended source-built recovery |
+| TWRP-branded variant | later, after the OrangeFox 16.0 source build boots |
 
-## Device specifications
+The working binary recipe, hashes and full notes live in
+**https://github.com/Deep865/vegas26-recovery** (docs repo).
 
-|        Basic | Spec Sheet              |
-| -----------: | :---------------------- |
-|     Codename | vegas26                  |
-|          SoC | MediaTek Dimensity 6300 |
-|          GPU | Mali-G57 MC2            |
-| Architecture | ARM64                   |
-|      Display | 720 × 1604              |
-|     Recovery | Vendor Boot             |
-| Android Base | Android 12.1 TWRP       |
+## Device
 
-## Features
+| | |
+|---|---|
+| Model | moto g power - 2026 / `XT2617V` |
+| Codename | `vegas26` (bootloader product `vegas`) |
+| SoC | MediaTek MT6835 (Dimensity 6300) |
+| Display | 1080 × 2388, 120 Hz, TXD FT8725 panel, Focaltech in-cell touch |
+| Firmware | `W1WEOS36.48-22-3-3-4-3`, Android 16, patch 2026-06-01 |
+| Kernel | 5.15.189-android13-8 |
+| Recovery | vendor_boot (`platform`/recovery fragments; no recovery partition) |
 
-Works:
+## Quick start (TWRP 14.1)
 
-* [x] ADB
-* [x] Display
-* [x] Touchscreen
-* [x] Decryption
-* [x] Fastbootd
-* [x] Flashing
-* [x] MTP
-* [x] Sideload
-* [x] USB OTG
-* [x] Vibrator
-* [ ] Flashlight
+```bash
+repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-14.1
+repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
+cp -r device-tree device/motorola/vegas26   # or clone this repo there
 
-## Build
-
-First initialize the minimal TWRP AOSP tree:
-
-```
-repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
-repo sync -j$(nproc --all)
-```
-
-Then add the vegas26 device tree.
-
-Build with:
-
-```
 source build/envsetup.sh
-lunch twrp_vegas26-eng
-mka vendorbootimage -j$(nproc --all)
+export ALLOW_MISSING_DEPENDENCIES=true
+lunch twrp_vegas26-ap2a-eng
+mka vendorbootimage -j16
 ```
 
-The resulting image can be found at:
+The A14 fixes are automated in `scripts/10-build-14.1.sh` / `scripts/11-rebuild.sh`.
+See `BUILD.md` for the patch list and the repack/verify steps.
 
+## OrangeFox 16.0 (source)
+
+```bash
+git clone https://gitlab.com/OrangeFox/sync.git
+cd sync
+./orangefox_sync.sh --branch 16.0 --path ~/fox_16.0
+# copy this tree to ~/fox_16.0/device/motorola/vegas26, then:
+cd ~/fox_16.0
+source build/envsetup.sh
+lunch twrp_vegas26-bp2a-eng        # verify the combo after sync
+mka vendorbootimage -j16           # or recoveryimage, depending on the tree
 ```
-out/target/product/vegas26/vendor_boot.img
-```
 
-## Flashing
+## Cautions
 
-Boot the device into bootloader mode and flash:
+- Never relock the bootloader with modified `lk`/`init_boot`.
+- Do not flash another device's recovery/ROM.
+- Keep `nvram`, `nvdata`, `seccfg`, `persist`, `frp`, `protect*`, `md1img` private.
+- Use the stock `vendor_dlkm` Focaltech FT8725 module for touch on this board.
+- Back up `super` before any GSI experiment.
 
-```
-fastboot flash vendor_boot vendor_boot.img
-```
+## Credits
 
-Then reboot the device.
-
-> **Developer note:** If the build fails, inspect the log before blaming the compiler. If the compiler is innocent, blame the fstab. If the fstab is innocent, blame the DTB. If everything looks correct, acquire a Monster and stare at the terminal until the answer appears. 🗿
-
-## Port Information
-
-This device tree is based on the **moto g 5g 2025 (`kansas`) TWRP tree**.
-
-vegas26-specific changes include:
-
-* vegas26 device configuration
-* vegas26 prebuilt kernel and DTB
-* vegas26 vendor configuration
-* vegas26 touchscreen/calibration configuration
-* vegas26-specific recovery fstab
-* vegas26 display and haptic configuration
-* Fixes carried over from the original vegas26 tree
-
-Special thanks to **[@evoxdl](https://github.com/evoxdl)** for fixes and work incorporated into the port.
-
-## Development
-
-This tree was built through the highly scientific process of:
-
-1. Change one thing.
-2. Build.
-3. Watch GitHub Actions explode.
-4. Drink something caffeinated.
-5. Stare at the fstab.
-6. Change something else.
-7. Somehow make touchscreen work.
-8. Immediately break FastbootD.
-9. Repeat until it boots. 😂
-
-No cigarettes were harmed in the making of this device tree.
-
-The developer, however, may have stared at the terminal long enough to consider them. 🚬🗿
-
-## Special Thanks
-
-* **[@Dip184](https://github.com/Dip184)** — for the decryption guide and all the work
-* **[@koaaN](https://github.com/koaaN)** — for the security patch level sync script
-* **[@perilouspike](https://github.com/perilouspike)** — for the base device tree
-* **[@evoxdl](https://github.com/evoxdl)** — for fixes and contributions incorporated into this port
-* **TeamWin Recovery Project (TWRP)** — for the recovery framework and `prepdecrypt` mechanism this build's decrypt fix is based on
-
----
-
-### 🗿 CRONCH BUILD STATUS
-
-**Display:** WORKS
-**Touch:** WORKS
-**Vibration:** WORKS
-**ADB:** WORKS
-**Fstab:** *probably*
-**FastbootD:** *we are about to find out*
-**GitHub Actions:** 💀
-**Build developer:** 🧍 + terminal + questionable caffeine consumption
-**Compiler:** **NOT ALLOWED TO CRONCH**
+See the docs repo `CREDITS.md`. This tree is derived from public Nevada/Kansas work
+(`crabcakes97`, `evoxdl`, Hovatek) and the XDA recovery thread.
