@@ -153,6 +153,9 @@ TW_INCLUDE_LIBRESETPROP := true
 TW_INCLUDE_LPDUMP := true
 TW_INCLUDE_LPTOOLS := true
 TW_EXCLUDE_APEX := true
+# OrangeFox A16 post-processing removes terminfo; the nano_twrp rule copies it at the
+# same time and races. Nano is optional; exclude it for the source build.
+TW_EXCLUDE_NANO := true
 TW_INCLUDE_NTFS_3G := true
 TARGET_USES_MKE2FS := true
 TW_INCLUDE_FUSE_EXFAT := true

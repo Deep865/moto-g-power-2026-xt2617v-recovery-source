@@ -56,9 +56,11 @@ for this A16 vendor.
 - Stock 1080×2388 DSI panel modules added; stock FT8725 module replaces the wrong one in
   all three module paths.
 - `lunch omni_vegas26-bp2a-eng` works (Android 16, `BP2A`).
-- Build in progress: `mka vendorbootimage -j16`.
-- `vendorsetup.sh` obsolete `add_lunch_combo` lines removed (they return non-zero in the
-  A16 envsetup and abort `set -e` scripts).
+- Build fixes applied:
+  - `PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE := false` (magiskboot is 4K; A16 wants 16K),
+  - `TW_EXCLUDE_NANO := true` (terminfo copy races OrangeFox post-processing),
+  - obsolete `add_lunch_combo` lines removed from `vendorsetup.sh`.
+- Incremental `mka vendorbootimage -j16` running after the nano fix.
 
 Goal: a from-source image that boots with the same DTB, panel modules and stock FT8725
 module as the known-good 14.1 binary.

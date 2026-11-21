@@ -1,5 +1,9 @@
 LOCAL_PATH := device/motorola/vegas26
 
+# A16 checks prebuilt ELF max page size (16K). The magiskboot prebuilt from
+# external/magisk-prebuilt is 4K-aligned; disable the check for this tree.
+PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE := false
+
 # Soong namespace
 PRODUCT_SOONG_NAMESPACES += $(LOCAL_PATH)
 

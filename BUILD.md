@@ -82,6 +82,16 @@ The 16.0 manifest owns the OrangeFox recovery and `vendor/recovery`; the product
 makefile may need to inherit the OrangeFox common config instead of `vendor/twrp`.
 Bring-up status is tracked in `STATUS.md`.
 
+### A16 build fixes found on this tree
+
+- `device.mk`: `PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE := false`
+  The bundled `magiskboot` prebuilt is 4K-page aligned; A16’s prebuilt ELF check wants
+  16K and stops at 96% with `Load segment has alignment 4096 but 16384 required`.
+- `BoardConfig.mk`: `TW_EXCLUDE_NANO := true`
+  OrangeFox post-processing removes `system/etc/terminfo` while the `nano_twrp` rule
+  copies it; the parallel copy fails at 67% with `cp: …/terminfo/… No such file or
+  directory`. Nano is optional; excluding it removes the race.
+
 ## Known-good binary
 
 The OrangeFox 14.1-based image with the stock FT8725 module is documented in the docs
