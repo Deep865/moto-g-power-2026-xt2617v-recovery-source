@@ -9,7 +9,7 @@ on 2026-11-22 with an encrypted `/data` and PIN `1234`:
 
 | Recovery | Script | Self-test | SHA-256 |
 |---|---|---:|---|
-| OrangeFox R12.0 | `scripts/91-build-ofox12-recovery.sh` | **17/17** + sideload | `86c42c57…223b` |
+| OrangeFox R12.0 | `scripts/91-build-ofox12-recovery.sh` | **17/17** + sideload | `9cd70969…24a0` |
 | TWRP 3.7.1-12 | `scripts/92-build-twrp12.sh` | **17/17** | `0a241558…c5d7` |
 | PBRP 4.x | `scripts/93-build-pbrp12.sh` | **17/17** | `c899f61e…77cb` |
 

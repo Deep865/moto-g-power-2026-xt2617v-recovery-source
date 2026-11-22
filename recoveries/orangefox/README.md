@@ -41,7 +41,7 @@ mka vendorbootimage -j16
 ```text
 $OUT_DIR/OrangeFox-R12.0-vegas26.img
 55.2 MB content, padded to 67,108,864 bytes
-SHA-256 86c42c5777109fa818ca1786392d6e3b8ae6aaeddc0d237fb843bb14a956223b
+SHA-256 9cd709698b444658d5db5bbbe047429bebfc2ce4209e1b08c377d591ff1a24a0
 ```
 
 A fresh build may differ by build ID. Verify before flashing:

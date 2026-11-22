@@ -113,7 +113,7 @@ haptics, MTP/ADB, six panels). OrangeFox also passed an ADB sideload test.
 
 | Image | Size (content) | SHA-256 |
 |---|---:|---|
-| `OrangeFox-R12.0-vegas26.img` | 55.2 MB | `86c42c5777109fa818ca1786392d6e3b8ae6aaeddc0d237fb843bb14a956223b` |
+| `OrangeFox-R12.0-vegas26.img` | 55.2 MB | `9cd709698b444658d5db5bbbe047429bebfc2ce4209e1b08c377d591ff1a24a0` |
 | `TWRP-3.7.1-12-vegas26.img` | 52.8 MB | `0a241558f40d4cd18b0b2299d0018ac0154362045691b329c8bfb4a6d562c5d7` |
 | `PBRP-4.x-vegas26.img` | 54.9 MB | `c899f61ee38ad14ecccd352fa06fcf9e61737698487eb83001ec4a3d95d977cb` |
 
