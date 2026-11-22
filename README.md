@@ -25,6 +25,12 @@ Pick one in [`recoveries/README.md`](recoveries/README.md); build all three with
 The working binary recipe, hashes and full notes live in
 **https://github.com/Deep865/vegas26-recovery** (docs repo).
 
+## Three working recoveries
+
+- [recoveries/README.md](recoveries/README.md) — pick OrangeFox, TWRP or PBRP
+- [BUILD-ALL.md](BUILD-ALL.md) — sync and build all three
+- [Release assets](https://github.com/Deep865/moto-g-power-2026-xt2617v-recovery/releases/tag/2026-11-21)
+
 ## Device
 
 | | |
