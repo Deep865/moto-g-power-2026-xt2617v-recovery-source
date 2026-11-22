@@ -35,7 +35,7 @@ cd moto-g-power-2026-xt2617v-walmart-recovery-source
 
 The default destination is `$HOME/recovery-sources`. The exact upstream URLs,
 branches, manifest commits and the pinned OrangeFox core are in
-[`sources.lock`](sources.lock). A preserved copy of the exact recovery core is in
+[`sources.lock`](sources.lock). Preserved copies of the exact OrangeFox, TWRP and PBRP recovery cores are in
 [`third_party/`](third_party/). See
 [`BUILD-FROM-THIS-REPO.md`](BUILD-FROM-THIS-REPO.md) for the full no-hunting path.
 

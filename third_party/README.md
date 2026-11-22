@@ -1,4 +1,4 @@
-# Preserved upstream recovery core
+# Preserved upstream recovery cores
 
 `bootable-recovery-8cd9df2b4.tar.xz` is the exact upstream **OrangeFox
 `bootable/recovery`** tree at commit:
@@ -31,3 +31,14 @@ tar -xJf bootable-recovery-8cd9df2b4.tar.xz
 
 It contains the upstream licence. The device-specific changes are **not** in this
 tarball; they are in this repo's `recovery/`, `prebuilt/`, `*.mk` and scripts.
+
+## TWRP and PBRP cores
+
+The same preservation applies to the TWRP and PBRP recovery cores used for the
+tested images. Neither core was patched for this device; the device-tree changes are
+in this repo. They are stored here so the exact trees survive upstream changes.
+
+| Tarball | Commit | SHA-256 |
+|---|---|---|
+| `bootable-recovery-twrp-12.1-5c3d206.tar.xz` | `5c3d206a5eeb3d446bcda8248a405a4b278bab5c` | `ddffce9e3326c123846cb3eea5189908aeaeb599ee6e9ac022a65d4093de95f1` |
+| `bootable-recovery-pbrp-12.1-c3ee88a.tar.xz` | `c3ee88af57d32a842b2a8ff861a72a7bf24da846` | `07b36ad3a30a7bc0d9f47e86e8b6d332604752ede66abab8f8c37286f65d7c36` |

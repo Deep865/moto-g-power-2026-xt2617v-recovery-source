@@ -15,11 +15,13 @@ ORANGEFOX_RECOVERY_CORE=8cd9df2b4cbbbf99acc3182faaa8d0f10cee9779
 TWRP_MANIFEST_URL=https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git
 TWRP_BRANCH=twrp-12.1
 TWRP_MANIFEST_COMMIT=6dc117d9cbd08430daa16db2013560e1c4017fa8
+TWRP_RECOVERY_CORE=5c3d206a5eeb3d446bcda8248a405a4b278bab5c
 
 # PBRP
 PBRP_MANIFEST_URL=https://github.com/PitchBlackRecoveryProject/manifest_pb.git
 PBRP_BRANCH=android-12.1
 PBRP_MANIFEST_COMMIT=59ff14c8ad14cd615028f2586d7fec5a98d8d9c7
+PBRP_RECOVERY_CORE=c3ee88af57d32a842b2a8ff861a72a7bf24da846
 
 # This repo
 DEVICE_TREE=moto-g-power-2026-xt2617v-walmart-recovery-source
@@ -42,6 +44,10 @@ MAGISK_VERSION=v31.1
 # Preserved upstream recovery core (not used directly by the builder)
 BOOTABLE_RECOVERY_TARBALL=third_party/bootable-recovery-8cd9df2b4.tar.xz
 BOOTABLE_RECOVERY_TARBALL_SHA256=e038e3f332e7f58a7cc347f9077ed753459a7349aae7f58d7d54717efdae69bf
+TWRP_CORE_TARBALL=third_party/bootable-recovery-twrp-12.1-5c3d206.tar.xz
+TWRP_CORE_TARBALL_SHA256=ddffce9e3326c123846cb3eea5189908aeaeb599ee6e9ac022a65d4093de95f1
+PBRP_CORE_TARBALL=third_party/bootable-recovery-pbrp-12.1-c3ee88a.tar.xz
+PBRP_CORE_TARBALL_SHA256=07b36ad3a30a7bc0d9f47e86e8b6d332604752ede66abab8f8c37286f65d7c36
 ```
 
 ## What is pinned vs. what can move

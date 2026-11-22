@@ -85,6 +85,8 @@ fixes. Do not copy it manually.
 | `patches/12.1/` | historical 14.1 backports, now upstream in the pinned 12.1 core |
 | `sources.lock` | exact upstream URLs, branches, manifest commits and core hash |
 | `third_party/bootable-recovery-8cd9df2b4.tar.xz` | preserved copy of the exact OrangeFox recovery core |
+| `third_party/bootable-recovery-twrp-12.1-5c3d206.tar.xz` | preserved TWRP 12.1 core |
+| `third_party/bootable-recovery-pbrp-12.1-c3ee88a.tar.xz` | preserved PBRP 12.1 core |
 | `experimental/` | 14.1/16.0 history and the backport roadmap, not shipped |
 
 ## What is not stored here
