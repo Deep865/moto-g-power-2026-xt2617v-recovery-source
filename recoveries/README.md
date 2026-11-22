@@ -6,7 +6,7 @@ fixes. **Build the one you want**; you do not need all three.
 
 | Recovery | Build sheet | Script | Base | Tested size |
 |---|---|---|---|---:|
-| **OrangeFox R12.0** | [orangefox/README.md](orangefox/README.md) | `scripts/91-build-ofox12-recovery.sh` | OrangeFox `fox_12.1` | 55.1 MB |
+| **OrangeFox R12.0** | [orangefox/README.md](orangefox/README.md) | `scripts/91-build-ofox12-recovery.sh` | OrangeFox `fox_12.1` | 55.2 MB |
 | **TWRP 3.7.1-12** | [twrp/README.md](twrp/README.md) | `scripts/92-build-twrp12.sh` | TWRP `twrp-12.1` | 52.8 MB |
 | **PBRP 4.x** | [pbrp/README.md](pbrp/README.md) | `scripts/93-build-pbrp12.sh` | PBRP `android-12.1` | 54.9 MB |
 
@@ -31,7 +31,7 @@ Power**. `fastboot reboot recovery` boots normal Android on this unit. Keep the 
 
 | Image | SHA-256 |
 |---|---|
-| OrangeFox | `5714ece262c4aeeb399ffc05878d4af070bc161e6333a9e18875b130c4b3f9b7` |
+| OrangeFox | `86c42c5777109fa818ca1786392d6e3b8ae6aaeddc0d237fb843bb14a956223b` |
 | TWRP | `0a241558f40d4cd18b0b2299d0018ac0154362045691b329c8bfb4a6d562c5d7` |
 | PBRP | `c899f61ee38ad14ecccd352fa06fcf9e61737698487eb83001ec4a3d95d977cb` |
 

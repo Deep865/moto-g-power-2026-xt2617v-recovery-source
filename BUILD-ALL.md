@@ -50,9 +50,11 @@ FOX_TREE=$HOME/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
 
 The script:
 
-- checks out the tested `bootable/recovery` commit (`3fc9e73f`);
-- applies `patches/12.1/0001-partition-skip-data-size.patch` and
-  `patches/12.1/0002-alt-block-device-paths.patch`;
+- checks out the latest tested `fox_12.1` core (`8cd9df2b4`), which already
+  includes the two former 14.1 backports (skip data-size scan; alternate
+  `/dev/block/by-name`) plus thermal, bzip2, vibration-default, reboot-recovery and
+  double-tap-to-wake fixes;
+- no longer applies the old `patches/12.1/` by hand; they are upstream now;
 - patches `vendor/recovery/OrangeFox_vendor.sh` to honour `FOX_SKIP_UPX=1`;
 - makes `gatekeeper.*.so` real symlinks;
 - adds `16` to the CTS platform lists;
@@ -126,7 +128,7 @@ These are why the source builds boot; do not remove them:
 ## Size limit
 
 The bootloader accepts roughly **55.5 MB** of `vendor_boot` content. The tested 12.1
-builds fit (OrangeFox ~55.1 MB, TWRP ~52.8 MB, PBRP ~54.9 MB). Do not add large
+builds fit (OrangeFox ~55.2 MB, TWRP ~52.8 MB, PBRP ~54.9 MB). Do not add large
 fonts or the full stock module set; the 203-module set in this tree is the working
 one.
 

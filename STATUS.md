@@ -9,7 +9,7 @@ on 2026-11-22 with an encrypted `/data` and PIN `1234`:
 
 | Recovery | Script | Self-test | SHA-256 |
 |---|---|---:|---|
-| OrangeFox R12.0 | `scripts/91-build-ofox12-recovery.sh` | **17/17** + sideload | `5714ece2…f9b7` |
+| OrangeFox R12.0 | `scripts/91-build-ofox12-recovery.sh` | **17/17** + sideload | `86c42c57…223b` |
 | TWRP 3.7.1-12 | `scripts/92-build-twrp12.sh` | **17/17** | `0a241558…c5d7` |
 | PBRP 4.x | `scripts/93-build-pbrp12.sh` | **17/17** | `c899f61e…77cb` |
 
@@ -23,9 +23,14 @@ all three with [`BUILD-ALL.md`](BUILD-ALL.md).
 ## What is in the tree
 
 - One device tree (`device/motorola/vegas26`) used by all three manifests.
-- OrangeFox 14.1 → 12.1 backports:
-  - `0001-partition-skip-data-size.patch` — skip the data-size scan before decrypt.
-  - `0002-alt-block-device-paths.patch` — fall back to `/dev/block/by-name`.
+- OrangeFox 12.1 core `8cd9df2b4`, which includes:
+  - skip the data-size scan before decrypt;
+  - fall back between `/dev/block/bootdevice/by-name` and `/dev/block/by-name`;
+  - thermal-sensor unsigned-wrap fix;
+  - bzip2 available in recovery;
+  - configurable vibration defaults;
+  - Reboot Recovery after actions;
+  - optional double-tap-to-wake (`FOX_NO_BLANK_DT2W`).
 - LF text, real gatekeeper symlinks, minimal fstab, haptic load order, sideload
   `adbd` handling and no UPX.
 - Stock FT8725 touch module from `vendor_dlkm`; the bundled G Play module fails
@@ -48,7 +53,7 @@ on this Android 16 vendor; their full images can also exceed the ~55.5 MB
 - Historical notes: [`experimental/README.md`](experimental/README.md) and
   [`experimental/BUILD-14.1-16.0.md`](experimental/BUILD-14.1-16.0.md)
 - Old scripts: `scripts/experimental/` (kept for reference; not turnkey)
-- What we want to bring into 12.1:
+- What we want to bring into 12.1 next:
   [`experimental/BACKPORT-ROADMAP.md`](experimental/BACKPORT-ROADMAP.md)
 
 ## Modem

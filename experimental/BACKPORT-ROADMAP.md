@@ -4,20 +4,26 @@ The 12.1 recovery is the only one that boots reliably on this `XT2617V`. We do n
 ship 14.1/16.0 images. Instead, we backport specific fixes from the newer branches
 when they are useful, small and testable on the 12.1 core.
 
-## Already backported (in `patches/12.1/`)
+## Now in the 12.1 core (`8cd9df2b4`)
 
-| Patch | What it does | Origin |
-|---|---|---|
-| `0001-partition-skip-data-size.patch` | Skip the data-size scan before decryption, avoiding a hang on this encrypted `/data` | OrangeFox 14.1 |
-| `0002-alt-block-device-paths.patch` | Fall back between `/dev/block/bootdevice/by-name` and `/dev/block/by-name` | OrangeFox 14.1 |
+| Fix | What it does |
+|---|---|
+| Skip data-size scan before decrypt | Avoids a hang on this encrypted `/data` |
+| Alternate block-device paths | Falls back between `/dev/block/bootdevice/by-name` and `/dev/block/by-name` |
+| Thermal unsigned-wrap fix | Correct CPU temperature reading |
+| bzip2 | Adds `bzip2` to recovery unless `TW_EXCLUDE_BZIP2` is set |
+| Vibration defaults | `OF_VIBRATION_DEFAULTS` build variable (default 40,40,160) |
+| Reboot Recovery after actions | Completion pages offer Reboot Recovery |
+| Double-tap-to-wake | Optional `FOX_NO_BLANK_DT2W` with `TW_NO_SCREEN_BLANK` |
 
-Both are applied by `scripts/91-build-ofox12-recovery.sh` and were part of the
-17/17-tested OrangeFox image.
+The two former hand-applied patches live in `patches/12.1/` for history; the
+latest core already contains them. `scripts/91-build-ofox12-recovery.sh` pins the
+core and does not re-apply them.
 
 ## Candidates to evaluate
 
 These are areas where the newer branches may contain useful changes. Each one must
-be reviewed against the pinned `bootable/recovery` commit (`3fc9e73f`), not copied
+be reviewed against the pinned `bootable/recovery` commit (`8cd9df2b4`), not copied
 blindly.
 
 | Area | Why it might help | Risk |
@@ -29,11 +35,12 @@ blindly.
 | Touch / module loading order | Avoid `ENODEV` and haptic races | Low; device tree already fixed |
 | Theme/minui assets | UI polish only if it fits the size limit | Low value, high size risk |
 | Updated fonts/icons | Only if the image stays under ~55.5 MB | High size risk |
+| Enable dt2w by default | Set `TW_NO_SCREEN_BLANK` + `FOX_NO_BLANK_DT2W`; needs UI testing | Medium |
 | 14.1/16.0 UI code | Requires the newer userspace; does not fit 12.1 | **Do not attempt** |
 
 ## Rules
 
-1. The patch must apply to `fox_12.1` at `3fc9e73f` (or a deliberately re-pinned
+1. The patch must apply to `fox_12.1` at `8cd9df2b4` (or a deliberately re-pinned
    commit) and compile for `omni_vegas26-eng`.
 2. The resulting image must stay under the bootloader's ~55.5 MB `vendor_boot`
    content limit. Prefer only the needed change, not newer theme/resource trees.

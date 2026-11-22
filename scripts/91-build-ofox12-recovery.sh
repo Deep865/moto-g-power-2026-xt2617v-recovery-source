@@ -1,22 +1,26 @@
 #!/bin/bash
-# OrangeFox R12.0 (12.1 branch) for vegas26, with the 14.1 backports.
+# OrangeFox R12.0 (latest fox_12.1 core) for vegas26.
 set -o pipefail
 FOX_TREE=${FOX_TREE:-$HOME/fox_12.1}
+FOX_CORE_REV=${FOX_CORE_REV:-8cd9df2b4}
 DEVICE_TREE=${DEVICE_TREE:-$(cd "$(dirname "$0")/.." && pwd)}
 OUT_DIR=${OUT_DIR:-$PWD/out-images}
 mkdir -p "$OUT_DIR"
+case "$OUT_DIR" in
+  /mnt/*) echo "OUT_DIR must be on a case-sensitive Linux filesystem, not /mnt/*"; exit 1;;
+esac
 exec > >(tee -a "$OUT_DIR/ofox12-build.log") 2>&1
 echo "=== ORANGEFOX 12.1 BUILD $(date -u) ==="
 
 cd "$FOX_TREE" || { echo "missing FOX_TREE=$FOX_TREE"; exit 1; }
 
-# Pin the working image's codebase and apply the two 14.1 backports.
-git -C bootable/recovery checkout -q 3fc9e73f
-git -C bootable/recovery reset -q --hard 3fc9e73f
-for p in "$DEVICE_TREE"/patches/12.1/000*.patch; do
-  echo "applying $(basename "$p")"
-  git -C bootable/recovery am "$p" || { echo "patch failed"; exit 1; }
-done
+# Pin to the newer fox_12.1 core. It includes the two former 14.1 backports
+# (skip data-size scan before decrypt; alternate /dev/block/by-name fallbacks)
+# plus thermal, bzip2, vibration, reboot-recovery and dt2w fixes.
+git -C bootable/recovery fetch -q origin fox_12.1 2>/dev/null || true
+git -C bootable/recovery checkout -q "$FOX_CORE_REV"
+git -C bootable/recovery reset -q --hard "$FOX_CORE_REV"
+echo "OrangeFox recovery core: $(git -C bootable/recovery log -1 --format='%h %s')"
 
 # OrangeFox always UPX-compresses /sbin and /system/bin; skip it.
 UPX=vendor/recovery/OrangeFox_vendor.sh
@@ -54,7 +58,8 @@ export BUILD_BROKEN_PLUGIN_VALIDATION=true
 lunch omni_vegas26-eng || { echo 'lunch failed'; exit 1; }
 mka vendorbootimage -j16 || { echo 'build failed'; exit 1; }
 
-IMG=out/target/product/vegas26/vendor_boot.img
+IMG="$OUT_DIR/target/product/vegas26/vendor_boot.img"
+[ -f "$IMG" ] || IMG="$OUT_DIR/target/product/vegas26/OrangeFox-R12.0-Unofficial-vegas26.img"
 cp "$IMG" "$OUT_DIR/OrangeFox-R12.0-vegas26.img"
 ls -l "$OUT_DIR/OrangeFox-R12.0-vegas26.img"
 sha256sum "$OUT_DIR/OrangeFox-R12.0-vegas26.img"

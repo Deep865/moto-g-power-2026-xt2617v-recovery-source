@@ -30,7 +30,8 @@ The experiments established:
   image format;
 - that a newer platform fragment with an older recovery can load, but the newer
   recovery still only draws the splash;
-- the two 14.1 fixes that were useful enough to backport to 12.1.
+- the 14.1 fixes that were useful enough to backport to 12.1; the latest
+  `fox_12.1` core now carries them upstream.
 
 Full on-device notes and failure hashes are in the docs repo `docs/05-ofox16.md` and
 `docs/11-recovery-test-results.md`.

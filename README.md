@@ -40,9 +40,10 @@ FOX_TREE=$HOME/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/91-build-ofox12-recovery.sh"
 ```
 
-`91` pins `bootable/recovery` to the tested codebase (`3fc9e73f`), applies the two
-14.1 backports in `patches/12.1/`, disables UPX, fixes the gatekeeper symlinks and
-builds with `FOX_EXTREME_SIZE_REDUCTION=0`.
+`91` pins `bootable/recovery` to the latest tested `fox_12.1` core (`8cd9df2b4`),
+which includes the two former 14.1 backports plus thermal, bzip2, vibration-default,
+reboot-recovery and double-tap-to-wake fixes. It disables UPX, fixes the gatekeeper
+symlinks and builds with `FOX_EXTREME_SIZE_REDUCTION=0`.
 
 ### TWRP 3.7.1-12
 
@@ -89,7 +90,7 @@ haptics, MTP/ADB, six panels). OrangeFox also passed an ADB sideload test.
 
 | Image | Size (content) | SHA-256 |
 |---|---:|---|
-| `OrangeFox-R12.0-vegas26.img` | 55.1 MB | `5714ece262c4aeeb399ffc05878d4af070bc161e6333a9e18875b130c4b3f9b7` |
+| `OrangeFox-R12.0-vegas26.img` | 55.2 MB | `86c42c5777109fa818ca1786392d6e3b8ae6aaeddc0d237fb843bb14a956223b` |
 | `TWRP-3.7.1-12-vegas26.img` | 52.8 MB | `0a241558f40d4cd18b0b2299d0018ac0154362045691b329c8bfb4a6d562c5d7` |
 | `PBRP-4.x-vegas26.img` | 54.9 MB | `c899f61ee38ad14ecccd352fa06fcf9e61737698487eb83001ec4a3d95d977cb` |
 
@@ -102,7 +103,8 @@ Recovery compatibility here is with the **Android 16 vendor/firmware**, not the 
 version of the recovery branch. The 14.1 and 16.0 OrangeFox branches both reach a
 recovery userspace dead end on this unit, and their full images can exceed the
 bootloader's ~55.5 MB `vendor_boot` content limit. The 12.1 core boots, decrypts and
-backs up reliably.
+backs up reliably, and its newer branch now carries the fixes we used to backport by
+hand.
 
 We are **not** shipping 14.1/16.0. We do want to **backport useful fixes** from those
 branches into 12.1 where they fit. See
@@ -133,7 +135,7 @@ recoveries/               per-recovery build sheets
   orangefox/README.md
   twrp/README.md
   pbrp/README.md
-patches/12.1/             the two OrangeFox 14.1 → 12.1 backports
+patches/12.1/             historical 14.1 backports (now upstream in 8cd9df2b4)
 recovery/                 the device tree / recovery ramdisk
 prebuilt/                 DTB and prebuilt modules
 scripts/

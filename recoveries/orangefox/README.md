@@ -1,8 +1,8 @@
 # OrangeFox R12.0
 
-The most feature-rich of the three working recoveries. Built from the OrangeFox
-**12.1** branch with two fixes backported from 14.1 and the device-tree fixes in this
-repo. ADB sideload was verified on this image.
+The most feature-rich of the three working recoveries. Built from the latest
+tested OrangeFox **12.1** core (`8cd9df2b4`) and the device-tree fixes in this repo.
+ADB sideload was verified on this image.
 
 ## Sync
 
@@ -23,10 +23,10 @@ FOX_TREE=$HOME/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/91-build-ofox12-recovery.sh"
 ```
 
-The script pins `bootable/recovery` to `3fc9e73f`, applies
-`patches/12.1/0001-partition-skip-data-size.patch` and
-`patches/12.1/0002-alt-block-device-paths.patch`, skips UPX, fixes the gatekeeper
-aliases and builds:
+The script pins `bootable/recovery` to `8cd9df2b4`. That core includes the two
+former 14.1 backports (skip data-size scan; alternate block paths) and newer fixes:
+thermal reading, bzip2, vibration defaults, Reboot Recovery after actions and
+optional double-tap-to-wake. It skips UPX, fixes the gatekeeper aliases and builds:
 
 ```text
 lunch omni_vegas26-eng
@@ -37,8 +37,8 @@ mka vendorbootimage -j16
 
 ```text
 $OUT_DIR/OrangeFox-R12.0-vegas26.img
-55.1 MB content, padded to 67,108,864 bytes
-SHA-256 5714ece262c4aeeb399ffc05878d4af070bc161e6333a9e18875b130c4b3f9b7
+55.2 MB content, padded to 67,108,864 bytes
+SHA-256 86c42c5777109fa818ca1786392d6e3b8ae6aaeddc0d237fb843bb14a956223b
 ```
 
 A fresh build may differ by build ID. Verify before flashing:
