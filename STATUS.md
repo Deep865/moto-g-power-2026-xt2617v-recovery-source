@@ -1,6 +1,20 @@
 # Source status — vegas26
 
-Last updated: 2026-11-21.
+Last updated: 2026-11-22.
+
+## OrangeFox 12.1 source (working, 2026-11-22)
+
+The working XDA R12.0 image is now reproducible from this tree.
+
+- Branch `fox_12.1`; `bootable/recovery` pinned to `3fc9e73f` (2026-08-21), the
+  codebase recorded in the working image.
+- Build: `scripts/90-build-ofox12-source.sh` with `FOX_SKIP_UPX=1` and
+  `FOX_EXTREME_SIZE_REDUCTION=0`.
+- Fixes: no UPX; all device-tree text files LF (a CRLF `prepdecrypt.sh` shebang
+  breaks init); the two gatekeeper HAL aliases are symlinks, not flattened text;
+  minimal working `recovery.fstab`.
+- Verified on-device: UI, touch (`ft8725`), FBE `/data` decrypt, backup.
+- Flashed image SHA-256 `88510c28…` (a fresh build may differ only by build ID).
 
 ## TWRP 14.1 (this tree)
 

@@ -13,7 +13,7 @@ This is a research tree. Read `STATUS.md` before assuming any image is usable.
 | **OrangeFox R12.0 (12.1 branch) known-good binary** | **works**: touch, `/data` decryption, backup/restore, MTP, ADB |
 | OrangeFox 14.1 source (`fox_14.1`) | builds; **black screen / bootloop**; recovery userspace not usable |
 | OrangeFox 16.0 source (`fox_16.0`) | builds; 16.0 platform fails at the bootloader; recovery splash/no menu — experimental |
-| OrangeFox 12.1/R12.0 source (`fox_12.1`) | sync/build control; the true source of the working image |
+| **OrangeFox 12.1/R12.0 source (`fox_12.1`)** | **works** (source-built 2026-11-22): touch, `/data` decrypt, backup — `scripts/90-build-ofox12-source.sh` |
 | TWRP-branded variant | later; TWRP 14.1 has its own userspace blocker, 16.0 is closer |
 
 The working binary recipe, hashes and full notes live in

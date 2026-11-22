@@ -110,6 +110,30 @@ The 14.1 build uses the A14 TWRP device tree (`/root/twrp/device/motorola/vegas2
 is a newer control. The working image is **OrangeFox R12.0**; the true source control is
 the 12.1 branch.
 
+## OrangeFox 12.1 source (working)
+
+Verified 2026-11-22. This reproduces the XDA R12.0 image from source.
+
+```bash
+./orangefox_sync.sh --branch 12.1 --path /root/fox_12.1
+# copy this tree to /root/fox_12.1/device/motorola/vegas26 (the script does it)
+scripts/90-build-ofox12-source.sh
+```
+
+Traps fixed by the script:
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| black screen / bootloop | OrangeFox UPX-compresses `init`, `recovery`, `adbd`, `sh` in `/sbin` and `/system/bin` | `FOX_SKIP_UPX=1` (the script patches `vendor/recovery/OrangeFox_vendor.sh`) |
+| hangs after the OrangeFox splash | `prepdecrypt.sh` had a Windows CRLF shebang (`#!/sbin/sh\r`) -> status 127 -> `crypto.ready` never set -> Trustonic KeyMint never starts -> `keystore2` aborts -> TWRP waits forever | keep every device-tree text file LF |
+| decrypt hangs at `using secdis to decrypt spblob` | `vendor/lib64/hw/gatekeeper.{trustonic,default}.so` were 18/20-byte text files instead of symlinks | link them to `libMcGatekeeper.so` / `libSoftGatekeeper.so` |
+| TWRP partition scan / hang | stock fstab with duplicate erofs/ext4 entries and `first_stage_mount` | use the minimal working `recovery.fstab` |
+| small UI differences | newer `bootable/recovery` | pin to `3fc9e73f` (2026-08-21) |
+
+The script also sets `FOX_EXTREME_SIZE_REDUCTION=0`, so fonts, FFiles and bash stay.
+Output is a two-fragment `vendor_boot` (~55.5 MB of content), well under the 64 MB
+partition.
+
 ## Known-good binary
 
 The **OrangeFox R12.0** image with the stock FT8725 module is documented in the docs repo
