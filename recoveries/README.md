@@ -31,7 +31,7 @@ Power**. `fastboot reboot recovery` boots normal Android on this unit. Keep the 
 
 | Image | SHA-256 |
 |---|---|
-| OrangeFox | `9cd709698b444658d5db5bbbe047429bebfc2ce4209e1b08c377d591ff1a24a0` |
+| OrangeFox | `873b5614bbb5e378c972f7c78962eab658f5e55a6f3002bac6bc968597b6b5fc` |
 | TWRP | `0a241558f40d4cd18b0b2299d0018ac0154362045691b329c8bfb4a6d562c5d7` |
 | PBRP | `c899f61ee38ad14ecccd352fa06fcf9e61737698487eb83001ec4a3d95d977cb` |
 

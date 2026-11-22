@@ -189,6 +189,8 @@ RECOVERY_SDCARD_ON_DATA := true
 TW_CUSTOM_CPU_TEMP_PATH := sys/devices/virtual/thermal/thermal_zone0/temp
 # The recovery kernel returns EINVAL for the CPU thermal zones; hide the field.
 TW_NO_CPU_TEMP := true
+TW_NO_SCREEN_BLANK := true
+FOX_NO_BLANK_DT2W := 1
 
 # Modules LAME IMPORTANT SHIT
 TW_LOAD_VENDOR_BOOT_MODULES := true

@@ -15,7 +15,7 @@ specific fixes that work on the 12.1 core.
 | bzip2 | Adds `bzip2` to recovery unless `TW_EXCLUDE_BZIP2` is set |
 | Vibration defaults | `OF_VIBRATION_DEFAULTS` build variable (default 40,40,160) |
 | Reboot Recovery after actions | Completion pages offer Reboot Recovery |
-| Double-tap-to-wake | Code present (`FOX_NO_BLANK_DT2W`), but **not enabled/tested successfully**; see note below |
+| Double-tap-to-wake | **Enabled** in the 2026-11-22 image (`873b5614…`) with a packed FT8725 handler; single tap blocked, double tap confirmed on hardware |
 
 The two former hand-applied patches live in `patches/historical-12.1/` for history; the
 latest core already contains them. `scripts/91-build-ofox12-recovery.sh` pins the
@@ -36,24 +36,24 @@ blindly.
 | Touch / module loading order | Avoid `ENODEV` and haptic races | Low; device tree already fixed |
 | Theme/minui assets | UI polish only if it fits the size limit | Low value, high size risk |
 | Updated fonts/icons | Only if the image stays under ~55.5 MB | High size risk |
-| Fix dt2w for FT8725 | Upstream handler assumes a packed event; FT8725 is standard MT-B, and `TW_NO_SCREEN_BLANK` is not globally applied in the Soong GUI. Needs a proper MT tracking-id handler. | Medium |
 | 14.1/16.0 UI code | Requires the newer userspace; does not fit 12.1 | **Do not attempt** |
 
 ## dt2w test (2026-11-22)
 
-Built with `TW_NO_SCREEN_BLANK := true` + `FOX_NO_BLANK_DT2W := 1`. The screen
-dimmed to 0 after the timeout, but a **single** tap woke it, not a double tap.
-That is not the intended behaviour, so the flags were reverted and the tested,
-published image remains the normal one. The likely causes are the upstream handler's
-packed-coordinate assumption vs. the FT8725 MT-B events, and `TW_NO_SCREEN_BLANK`
-not being applied to the Soong `libguitwrp`/`libminuitwrp` modules.
+Enabled in the final image with `TW_NO_SCREEN_BLANK := true`,
+`FOX_NO_BLANK_DT2W := 1` and a handler for the packed FT8725/MTK event stream
+(`BTN_TOUCH`, packed `EV_ABS` code 1 start, code 0 release).
 
-A follow-up MT-B/packed-event handler blocked single-tap wake, but the synthetic
-double-tap test was inconclusive: each injected tap took ~238 ms, and two taps
-exceeded the 450 ms window. It was not shipped. Real-finger timing may work, but
-there is not enough evidence yet.
+Verified on hardware:
 
-**Status:** doable in principle; needs a focused UI test pass. Not shipped.
+- single tap does nothing while the screen is dimmed/off
+- double tap wakes the screen
+- swipes/long presses do not wake
+- 17/17 recovery self-test still passes
+
+The lock-screen line no longer prints the CPU field; it shows battery only. CPU
+temperature is hidden with `TW_NO_CPU_TEMP := true` because recovery's kernel returns
+`EINVAL` for the CPU thermal zones.
 
 ## Rules
 

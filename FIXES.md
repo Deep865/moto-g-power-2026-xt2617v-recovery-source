@@ -45,7 +45,7 @@ That commit contains:
 - bzip2 (`TW_EXCLUDE_BZIP2`)
 - configurable vibration defaults (`OF_VIBRATION_DEFAULTS`)
 - Reboot Recovery after actions
-- optional double-tap-to-wake (`FOX_NO_BLANK_DT2W`)
+- double-tap-to-wake enabled (`FOX_NO_BLANK_DT2W`) with a packed FT8725 handler; the lock-screen CPU field is removed
 
 `scripts/91` does:
 
@@ -89,5 +89,5 @@ the running recovery.
 
 `scripts/verify-core.sh` fails the OrangeFox build unless the pinned core still
 contains the expected code: data-size skip, alternate block paths, thermal fix,
-bzip2, vibration defaults, reboot-recovery and double-tap-to-wake. If the upstream
+bzip2, vibration defaults, reboot-recovery and the double-tap handler. If the upstream
 commit is ever different, the build stops instead of silently losing a fix.

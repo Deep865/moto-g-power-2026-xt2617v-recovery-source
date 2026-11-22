@@ -24,6 +24,13 @@ echo "OrangeFox recovery core: $(git -C bootable/recovery log -1 --format='%h %s
 bash "$DEVICE_TREE/scripts/verify-core.sh" "$FOX_TREE" "$FOX_CORE_REV" || {
   echo "verify-core failed; refusing to build"; exit 1; }
 
+for p in "$DEVICE_TREE"/patches/active/*.patch; do
+  [ -f "$p" ] || continue
+  echo "applying active patch $(basename "$p")"
+  git -C bootable/recovery apply --check "$p" || { echo "active patch check failed"; exit 1; }
+  git -C bootable/recovery apply "$p" || { echo "active patch failed"; exit 1; }
+done
+
 # OrangeFox always UPX-compresses /sbin and /system/bin; skip it.
 UPX=vendor/recovery/OrangeFox_vendor.sh
 if ! grep -q FOX_SKIP_UPX "$UPX"; then
