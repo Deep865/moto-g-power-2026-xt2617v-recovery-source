@@ -1,0 +1,48 @@
+From 63ba96c4fd88b6cc15b8925f139063eac829db11 Mon Sep 17 00:00:00 2001
+From: wshamroukh <wshamroukh@gmail.com>
+Date: Thu, 22 Oct 2026 07:05:26 +0000
+Subject: [PATCH] partition: Skip data size calculation before decryption
+
+Avoid recursively scanning credential-encrypted data while the
+partition is still encrypted. Use the available free space until
+decryption completes, allowing Update_System_Details() to recalculate
+the actual backup size afterwards.
+---
+ partition.cpp | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/partition.cpp b/partition.cpp
+index 908c3d3f5..e899254f6 100644
+--- a/partition.cpp
++++ b/partition.cpp
+@@ -3279,11 +3279,22 @@ bool TWPartition::Update_Size(bool Display_Error) {
+ 
+ 	if (Has_Data_Media) {
+ 		if (Mount(Display_Error)) {
+-			Used = backup_exclusions.Get_Folder_Size(Mount_Point);
+-			Backup_Size = Used;
+-			int bak = (int)(Used / 1048576LLU);
+-			int fre = (int)(Free / 1048576LLU);
+-			LOGINFO("Data backup size is %iMB, free: %iMB.\n", bak, fre);
++			/*
++			 * Avoid recursively scanning credential-encrypted data before
++			 * FBE decryption. Update_System_Details() recalculates the
++			 * actual backup size after decryption.
++			 */
++			if (Is_Encrypted && !Is_Decrypted) {
++			        Used = Size - Free;
++			        Backup_Size = 0;
++			        LOGINFO("Skipping data backup size calculation until decryption.\n");
++			} else {
++			        Used = backup_exclusions.Get_Folder_Size(Mount_Point);
++			        Backup_Size = Used;
++			        int bak = (int)(Used / 1048576LLU);
++			        int fre = (int)(Free / 1048576LLU);
++			        LOGINFO("Data backup size is %iMB, free: %iMB.\n", bak, fre);
++			}
+ 		} else {
+ 			if (!Was_Already_Mounted)
+ 				UnMount(false);
+-- 
+2.34.1
+

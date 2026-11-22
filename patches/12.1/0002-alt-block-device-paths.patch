@@ -1,0 +1,93 @@
+From 02422454feed8d9f02a12e47f6ee4d03d28734ee Mon Sep 17 00:00:00 2001
+From: Darth9 <reyprimerjefe@gmail.com>
+Date: Fri, 4 Sep 2026 21:47:11 +0100
+Subject: [PATCH] Add checks for alternative pathnames of block devices
+
+---
+ data.cpp             | 2 +-
+ orangefox.cpp        | 2 +-
+ partitionmanager.cpp | 4 ++++
+ twrp-functions.cpp   | 2 +-
+ twrpRepacker.cpp     | 5 ++++-
+ 5 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/data.cpp b/data.cpp
+index 7ca8d86b2..b0d0573d9 100755
+--- a/data.cpp
++++ b/data.cpp
+@@ -737,7 +737,7 @@ void DataManager::SetDefaultValues()
+   mConst.SetValue("fox_branch", FOX_BRANCH);
+ 
+ #ifdef OF_ENABLE_FRP_ADDON
+-  if (TWFunc::Path_Exists("/dev/block/bootdevice/by-name/frp") || TWFunc::Fox_Property_Get("ro.frp.pst") != "") {
++  if (TWFunc::Path_Exists("/dev/block/bootdevice/by-name/frp") || TWFunc::Path_Exists("/dev/block/by-name/frp") || TWFunc::Fox_Property_Get("ro.frp.pst") != "") {
+ 	mConst.SetValue("enable_frp_addon", "1");
+   }
+ #endif
+diff --git a/orangefox.cpp b/orangefox.cpp
+index d171fe5eb..f3f066910 100644
+--- a/orangefox.cpp
++++ b/orangefox.cpp
+@@ -672,7 +672,7 @@ int Fox_Prepare_Update_Binary(const char *path, ZipArchiveHandle Zip)
+ 		  
+ 	          // check for embedded recovery installs
+ 	          if  (
+-	                 (TWFunc::CheckWord(FOX_TMP_PATH, "/dev/block/bootdevice/by-name/recovery")
++	                 ((TWFunc::CheckWord(FOX_TMP_PATH, "/dev/block/bootdevice/by-name/recovery") || TWFunc::CheckWord(FOX_TMP_PATH, "/dev/block/by-name/recovery"))
+ 	              && (TWFunc::CheckWord(FOX_TMP_PATH, "recovery.img") || TWFunc::CheckWord(FOX_TMP_PATH, "twrp.img"))
+ 	              && (zip_EntryExists(Zip, "recovery.img") || zip_EntryExists(Zip, "twrp.img") || zip_EntryExists(Zip, "recovery/twrp.img") || zip_EntryExists(Zip, "recovery/recovery.img"))
+ 	                 )) {
+diff --git a/partitionmanager.cpp b/partitionmanager.cpp
+index 18d0e29c2..13411bb06 100755
+--- a/partitionmanager.cpp
++++ b/partitionmanager.cpp
+@@ -296,6 +296,8 @@ bool Do_Disable_AVB2(string File_Name, char Disable_Flags, bool Display_Info) {
+ 	int _ret;
+ 	bool ret = false;
+ 	string dev = "/dev/block/bootdevice/by-name/";
++	if (!TWFunc::Path_Exists(dev))
++		dev = "/dev/block/by-name/";
+ 
+ 	FILE *vbmetaFile = fopen((dev + File_Name).c_str(), "rb+");
+ 	if (vbmetaFile != NULL) {
+@@ -336,6 +338,8 @@ bool TWPartitionManager::Disable_AVB2(bool Display_Info) {
+ 	bool vb = false;
+ 	bool vb_sys = false;
+ 	string dev = "/dev/block/bootdevice/by-name/";
++	if (!TWFunc::Path_Exists(dev))
++		dev = "/dev/block/by-name/";
+ 
+ 	string part = "vbmeta";
+ 	if (TWFunc::Path_Exists(dev + part)) {
+diff --git a/twrp-functions.cpp b/twrp-functions.cpp
+index 2793fcf4f..24b7ec074 100755
+--- a/twrp-functions.cpp
++++ b/twrp-functions.cpp
+@@ -260,7 +260,7 @@ uint64_t tmp;
+ /* return whether there is a real vendor partition */
+ bool TWFunc::Has_Vendor_Partition(void)
+ {
+-   if (TWFunc::Path_Exists ("/dev/block/bootdevice/by-name/vendor"))
++   if (TWFunc::Path_Exists ("/dev/block/bootdevice/by-name/vendor") || TWFunc::Path_Exists ("/dev/block/by-name/vendor"))
+        return true;
+    else
+       return false;
+diff --git a/twrpRepacker.cpp b/twrpRepacker.cpp
+index ca3f8243f..3bac38349 100755
+--- a/twrpRepacker.cpp
++++ b/twrpRepacker.cpp
+@@ -335,7 +335,10 @@ bool twrpRepacker::Flash_Current_Twrp() {
+ 
+ 	if (!slot.empty() && PartitionManager.Find_Partition_By_Path(dest_partition)) {
+ 		std::string root, src, dest;
+-		root = "/dev/block/bootdevice/by-name" + dest_partition;
++		root = "/dev/block/bootdevice/by-name";
++		if (!TWFunc::Path_Exists(root))
++			root = "/dev/block/by-name/";
++		 root += dest_partition;
+ 		if (slot == "_a" || slot == "a") {
+ 			src = root + "_a";
+ 			dest= root + "_b";
+-- 
+2.34.1
+

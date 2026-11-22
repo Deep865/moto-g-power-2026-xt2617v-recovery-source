@@ -5,12 +5,18 @@ Device tree, build scripts and status for recovery work on the MediaTek MT6835
 
 This is a research tree. Read `STATUS.md` before assuming any image is usable.
 
+Three recoveries work: OrangeFox R12.0, TWRP 3.7.1-12, and PBRP 4.x.
+Pick one in [`recoveries/README.md`](recoveries/README.md); build all three with
+[`BUILD-ALL.md`](BUILD-ALL.md).
+
 ## Status at a glance
 
 | Target | State |
 |---|---|
 | TWRP 14.1 from the minimal manifest + this tree | builds, verifies, flashes; **userspace does not reach UI** on the A16 vendor |
-| **OrangeFox R12.0 (12.1 branch) known-good binary** | **works**: touch, `/data` decryption, backup/restore, MTP, ADB |
+| **OrangeFox 12.1 source (`fox_12.1`)** | **works** — `scripts/91-build-ofox12-recovery.sh` |
+| **TWRP 12.1 source (`twrp-12.1`)** | **works** — `scripts/92-build-twrp12.sh` |
+| **PBRP 12.1 source (`android-12.1`)** | **works** — `scripts/93-build-pbrp12.sh` |
 | OrangeFox 14.1 source (`fox_14.1`) | builds; **black screen / bootloop**; recovery userspace not usable |
 | OrangeFox 16.0 source (`fox_16.0`) | builds; 16.0 platform fails at the bootloader; recovery splash/no menu — experimental |
 | **OrangeFox 12.1/R12.0 source (`fox_12.1`)** | **works** (source-built 2026-11-22): touch, `/data` decrypt, backup — `scripts/90-build-ofox12-source.sh` |

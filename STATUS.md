@@ -16,6 +16,21 @@ The working XDA R12.0 image is now reproducible from this tree.
 - Verified on-device: UI, touch (`ft8725`), FBE `/data` decrypt, backup.
 - Flashed image SHA-256 `88510c28…` (a fresh build may differ only by build ID).
 
+## Three working recoveries (2026-11-22)
+
+All on the 12.1 core, same device tree, same fixes (LF text, gatekeeper symlinks,
+minimal fstab, no UPX, haptic order, sideload adbd stop):
+
+- **OrangeFox R12.0** — `scripts/91-build-ofox12-recovery.sh`
+  (+ two 14.1 backports: skip data-size scan before decrypt; `/dev/block/by-name`
+  fallbacks). Sideload verified.
+- **TWRP 3.7.1-12** — `scripts/92-build-twrp12.sh`.
+- **PBRP 4.x** — `scripts/93-build-pbrp12.sh`.
+
+14.1 and 16.0 bootloop on this A16 vendor and their full images exceed the ~55.5 MB
+vendor_boot limit; do not offer them. Tests: 17/17 self-checks on all three
+(UI, touch, FBE decrypt, backups, haptics, MTP/ADB).
+
 ## TWRP 14.1 (this tree)
 
 - Manifest: `minimal-manifest-twrp/platform_manifest_twrp_aosp`, branch `twrp-14.1`.
