@@ -23,7 +23,7 @@ PBRP_MANIFEST_COMMIT=59ff14c8ad14cd615028f2586d7fec5a98d8d9c7
 
 # This repo
 DEVICE_TREE=moto-g-power-2026-xt2617v-walmart-recovery-source
-DEVICE_TREE_COMMIT=51afa3e
+DEVICE_TREE_COMMIT=c7cb5e8
 
 # Host/tools
 PLATFORM_TOOLS=35.0.0 or 37.0.1 (avoid 37.0.3)
