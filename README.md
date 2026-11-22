@@ -154,7 +154,7 @@ README.md                 this file
 BUILD-ALL.md              the full build guide for all three
 BUILD-FROM-THIS-REPO.md   one-repo clone + fetch + build path
 sources.lock              exact upstream revisions
-third_party/              preserved OrangeFox recovery core
+third_party/              preserved OrangeFox/TWRP/PBRP cores
 STATUS.md                 current status and what was tested
 recoveries/               per-recovery build sheets
   orangefox/README.md
