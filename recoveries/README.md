@@ -27,7 +27,7 @@ Power**. `fastboot reboot recovery` boots normal Android on this unit. Keep the 
 
 ## Tested binaries
 
-<https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery/releases/tag/2026-11-22>
+<https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-unlock-degoogle-guide/releases/tag/2026-11-22>
 
 | Image | SHA-256 |
 |---|---|

@@ -142,5 +142,5 @@ partition.
 ## Known-good binary
 
 The **OrangeFox R12.0** image with the stock FT8725 module is documented in the docs repo
-(`https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery`), including the exact repack script and
+(`https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-unlock-degoogle-guide`), including the exact repack script and
 SHA-256. Use it as the fallback while the 14.1/16.0 source builds are brought up.

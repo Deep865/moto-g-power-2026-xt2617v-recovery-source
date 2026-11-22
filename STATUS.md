@@ -38,7 +38,7 @@ all three with [`BUILD-ALL.md`](BUILD-ALL.md).
 
 ## Tested binaries and full phone guide
 
-<https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery>
+<https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-unlock-degoogle-guide>
 
 The docs repo contains the complete path for a Walmart / Straight Talk unit:
 Test DPC SIM-screen bypass, temporary root, LK patch and bootloader unlock, Magisk,

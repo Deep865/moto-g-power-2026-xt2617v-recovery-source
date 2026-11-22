@@ -29,22 +29,27 @@ sudo apt install -y bc bison build-essential ccache curl flex g++-multilib \
 PC for flashing; 37.0.3 can stall on `flash`.
 
 ```bash
-export DEVICE_TREE=/path/to/moto-g-power-2026-xt2617v-walmart-recovery-source
+git clone https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery-source.git
+cd moto-g-power-2026-xt2617v-walmart-recovery-source
+./scripts/fetch-sources.sh          # or RECOVERIES="orangefox"
+
+export DEVICE_TREE=$PWD
 export OUT_DIR=$HOME/recovery-images
 mkdir -p "$OUT_DIR"
 ```
 
-The scripts copy `$DEVICE_TREE` into `device/motorola/vegas26`, so you do not need to
-clone it into each manifest tree.
+The default tree root is `$HOME/recovery-sources`. Everything we changed is in this
+repo; see [`BUILD-FROM-THIS-REPO.md`](BUILD-FROM-THIS-REPO.md) and
+[`sources.lock`](sources.lock). The scripts copy `$DEVICE_TREE` into
+`device/motorola/vegas26`, so you do not need to clone it into each manifest tree.
 
 ## 1. OrangeFox R12.0
 
 ```bash
-git clone https://gitlab.com/OrangeFox/sync.git
-cd sync
-./orangefox_sync.sh --branch 12.1 --path "$HOME/fox_12.1"
+# only if you did not run the default fetch above:
+RECOVERIES="orangefox" ./scripts/fetch-sources.sh
 
-FOX_TREE=$HOME/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
+FOX_TREE=$HOME/recovery-sources/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/91-build-ofox12-recovery.sh"
 ```
 
@@ -65,13 +70,10 @@ Output: `$OUT_DIR/OrangeFox-R12.0-vegas26.img`.
 ## 2. TWRP 3.7.1-12
 
 ```bash
-mkdir -p "$HOME/twrp_12.1" && cd "$HOME/twrp_12.1"
-repo init --depth=1 \
-  -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git \
-  -b twrp-12.1
-repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
+# only if you did not run the default fetch above:
+RECOVERIES="twrp" ./scripts/fetch-sources.sh
 
-TWRP_TREE=$HOME/twrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
+TWRP_TREE=$HOME/recovery-sources/twrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/92-build-twrp12.sh"
 ```
 
@@ -80,12 +82,10 @@ Output: `$OUT_DIR/TWRP-3.7.1-12-vegas26.img`.
 ## 3. PBRP 4.x
 
 ```bash
-mkdir -p "$HOME/pbrp_12.1" && cd "$HOME/pbrp_12.1"
-repo init --depth=1 \
-  -u https://github.com/PitchBlackRecoveryProject/manifest_pb -b android-12.1
-repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
+# only if you did not run the default fetch above:
+RECOVERIES="pbrp" ./scripts/fetch-sources.sh
 
-PBRP_TREE=$HOME/pbrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
+PBRP_TREE=$HOME/recovery-sources/pbrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/93-build-pbrp12.sh"
 ```
 
@@ -100,9 +100,9 @@ After syncing the three trees:
 
 ```bash
 DEVICE_TREE=$DEVICE_TREE \
-FOX_TREE=$HOME/fox_12.1 \
-TWRP_TREE=$HOME/twrp_12.1 \
-PBRP_TREE=$HOME/pbrp_12.1 \
+FOX_TREE=$HOME/recovery-sources/fox_12.1 \
+TWRP_TREE=$HOME/recovery-sources/twrp_12.1 \
+PBRP_TREE=$HOME/recovery-sources/pbrp_12.1 \
 OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/build-all-three.sh"
 ```
@@ -167,5 +167,5 @@ supported build. Historical notes and scripts are in
 ## Flash the published images instead
 
 If you only want a working recovery, do not build at all:
-<https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery/releases/tag/2026-11-22>
+<https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-unlock-degoogle-guide/releases/tag/2026-11-22>
 has the three tested images, the recovery pack and the full walkthrough.

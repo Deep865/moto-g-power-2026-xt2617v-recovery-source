@@ -15,11 +15,29 @@ and the six 1080×2388 panel modules. Pick by UI; they are equally functional.
 
 - **Choose one:** [`recoveries/README.md`](recoveries/README.md)
 - **Build one or all three:** [`BUILD-ALL.md`](BUILD-ALL.md)
-- **Tested binaries and the full phone guide:** <https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery>
+- **Tested binaries and the full phone guide:** <https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-unlock-degoogle-guide>
 
 This repo is the **source/build** half. The other repo is the **walkthrough/release**
 half: SIM-screen bypass, temporary root, LK unlock, Magisk, LineageOS 23.2 microG
 GSI, recovery flash, modem unlock, backups and revert.
+
+
+## Everything needed to rebuild
+
+You only clone **this** repository. One script fetches the upstream AOSP/recovery
+base trees; everything we changed is already here.
+
+```bash
+git clone https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery-source.git
+cd moto-g-power-2026-xt2617v-walmart-recovery-source
+./scripts/fetch-sources.sh          # all three; or RECOVERIES="orangefox"
+```
+
+The default destination is `$HOME/recovery-sources`. The exact upstream URLs,
+branches, manifest commits and the pinned OrangeFox core are in
+[`sources.lock`](sources.lock). A preserved copy of the exact recovery core is in
+[`third_party/`](third_party/). See
+[`BUILD-FROM-THIS-REPO.md`](BUILD-FROM-THIS-REPO.md) for the full no-hunting path.
 
 ## Build the one you want
 
@@ -30,13 +48,13 @@ need to build all three.
 ### OrangeFox R12.0
 
 ```bash
-git clone https://gitlab.com/OrangeFox/sync.git
-cd sync
-./orangefox_sync.sh --branch 12.1 --path "$HOME/fox_12.1"
+# if not already fetched:
+RECOVERIES="orangefox" ./scripts/fetch-sources.sh
 
-export DEVICE_TREE=$(pwd)/../moto-g-power-2026-xt2617v-walmart-recovery-source
+export DEVICE_TREE=$PWD
 export OUT_DIR=$HOME/recovery-images
-FOX_TREE=$HOME/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
+mkdir -p "$OUT_DIR"
+FOX_TREE=$HOME/recovery-sources/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/91-build-ofox12-recovery.sh"
 ```
 
@@ -48,24 +66,26 @@ symlinks and builds with `FOX_EXTREME_SIZE_REDUCTION=0`.
 ### TWRP 3.7.1-12
 
 ```bash
-mkdir -p "$HOME/twrp_12.1" && cd "$HOME/twrp_12.1"
-repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
-repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
+# if not already fetched:
+RECOVERIES="twrp" ./scripts/fetch-sources.sh
 
-export DEVICE_TREE=$HOME/moto-g-power-2026-xt2617v-walmart-recovery-source
-TWRP_TREE=$HOME/twrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$HOME/recovery-images \
+export DEVICE_TREE=$PWD
+export OUT_DIR=$HOME/recovery-images
+mkdir -p "$OUT_DIR"
+TWRP_TREE=$HOME/recovery-sources/twrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/92-build-twrp12.sh"
 ```
 
 ### PBRP 4.x
 
 ```bash
-mkdir -p "$HOME/pbrp_12.1" && cd "$HOME/pbrp_12.1"
-repo init --depth=1 -u https://github.com/PitchBlackRecoveryProject/manifest_pb -b android-12.1
-repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
+# if not already fetched:
+RECOVERIES="pbrp" ./scripts/fetch-sources.sh
 
-export DEVICE_TREE=$HOME/moto-g-power-2026-xt2617v-walmart-recovery-source
-PBRP_TREE=$HOME/pbrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$HOME/recovery-images \
+export DEVICE_TREE=$PWD
+export OUT_DIR=$HOME/recovery-images
+mkdir -p "$OUT_DIR"
+PBRP_TREE=$HOME/recovery-sources/pbrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/93-build-pbrp12.sh"
 ```
 
@@ -74,8 +94,10 @@ PBRP_TREE=$HOME/pbrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$HOME/recovery-images
 After syncing the three trees above:
 
 ```bash
-DEVICE_TREE=$HOME/moto-g-power-2026-xt2617v-walmart-recovery-source \
-FOX_TREE=$HOME/fox_12.1 TWRP_TREE=$HOME/twrp_12.1 PBRP_TREE=$HOME/pbrp_12.1 \
+DEVICE_TREE=$PWD \
+FOX_TREE=$HOME/recovery-sources/fox_12.1 \
+TWRP_TREE=$HOME/recovery-sources/twrp_12.1 \
+PBRP_TREE=$HOME/recovery-sources/pbrp_12.1 \
 OUT_DIR=$HOME/recovery-images \
   "$DEVICE_TREE/scripts/build-all-three.sh"
 ```
@@ -130,6 +152,9 @@ Do not remove them; each one is the difference between a build and a boot:
 ```
 README.md                 this file
 BUILD-ALL.md              the full build guide for all three
+BUILD-FROM-THIS-REPO.md   one-repo clone + fetch + build path
+sources.lock              exact upstream revisions
+third_party/              preserved OrangeFox recovery core
 STATUS.md                 current status and what was tested
 recoveries/               per-recovery build sheets
   orangefox/README.md

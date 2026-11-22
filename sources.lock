@@ -1,0 +1,56 @@
+# Exact sources used for the tested builds
+
+Last updated: 2026-11-22. This file records the upstream revisions and tool versions.
+The supported builders pin the recovery core themselves; `scripts/fetch-sources.sh`
+fetches only the AOSP/recovery base trees.
+
+```ini
+# OrangeFox
+ORANGEFOX_SYNC_URL=https://gitlab.com/OrangeFox/sync.git
+ORANGEFOX_BRANCH=12.1
+ORANGEFOX_MANIFEST_COMMIT=6dc117d9cbd08430daa16db2013560e1c4017fa8
+ORANGEFOX_RECOVERY_CORE=8cd9df2b4cbbbf99acc3182faaa8d0f10cee9779
+
+# TWRP minimal manifest
+TWRP_MANIFEST_URL=https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git
+TWRP_BRANCH=twrp-12.1
+TWRP_MANIFEST_COMMIT=6dc117d9cbd08430daa16db2013560e1c4017fa8
+
+# PBRP
+PBRP_MANIFEST_URL=https://github.com/PitchBlackRecoveryProject/manifest_pb.git
+PBRP_BRANCH=android-12.1
+PBRP_MANIFEST_COMMIT=59ff14c8ad14cd615028f2586d7fec5a98d8d9c7
+
+# This repo
+DEVICE_TREE=moto-g-power-2026-xt2617v-walmart-recovery-source
+DEVICE_TREE_COMMIT=51afa3e
+
+# Host/tools
+PLATFORM_TOOLS=35.0.0 or 37.0.1 (avoid 37.0.3)
+ORANGEFOX_REQUIRED_UPSTREAM_PATCH=FOX_SKIP_UPX=1 (applied by scripts/91)
+UBUNTU=22.04
+JAVA=openjdk-17
+JOBS=16
+
+# Third-party tools bundled with the guide/flash kit
+VAL_PROTOCOL_COMMIT=dc7f41f9b1a32da1a78ef327bb62d2bef17d7bd0
+VEGAS_FREEDOM_COMMIT=ed78c7e5504341fbae2dfdfd0517c6248d367d59
+DFROOT_VERSION=4.7
+KERNELSU_VERSION=v3.3.1 (32680)
+MAGISK_VERSION=v31.1
+
+# Preserved upstream recovery core (not used directly by the builder)
+BOOTABLE_RECOVERY_TARBALL=third_party/bootable-recovery-8cd9df2b4.tar.xz
+BOOTABLE_RECOVERY_TARBALL_SHA256=e038e3f332e7f58a7cc347f9077ed753459a7349aae7f58d7d54717efdae69bf
+```
+
+## What is pinned vs. what can move
+
+- `scripts/91-build-ofox12-recovery.sh` checks out `ORANGEFOX_RECOVERY_CORE` by hash.
+  This is the exact core that produced the 17/17 image.
+- TWRP and PBRP use their 12.1 branch tips. The device tree and fixes are in this repo;
+  no core edits are made for them.
+- The upstream manifests can move. If you need the exact tested TWRP/PBRP tree, use
+  `third_party/`/`BUILD-FROM-THIS-REPO.md` and the manifest commits above as a guide.
+- `third_party/bootable-recovery-8cd9df2b4.tar.xz` preserves the OrangeFox core even
+  if the upstream repo changes or disappears.

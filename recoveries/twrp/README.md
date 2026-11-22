@@ -3,24 +3,24 @@
 Plain TWRP from the minimal TWRP **12.1** manifest. Smallest of the three working
 images and the most familiar UI. No OrangeFox-specific patches are needed.
 
-## Sync
+## Fetch the base once
+
+From the root of this repo:
 
 ```bash
-mkdir -p "$HOME/twrp_12.1" && cd "$HOME/twrp_12.1"
-repo init --depth=1 \
-  -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git \
-  -b twrp-12.1
-repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
+RECOVERIES="twrp" ./scripts/fetch-sources.sh
 ```
+
+That fetches TWRP 12.1 into `$HOME/recovery-sources/twrp_12.1`.
 
 ## Build
 
 ```bash
-export DEVICE_TREE=/path/to/moto-g-power-2026-xt2617v-walmart-recovery-source
+export DEVICE_TREE=$PWD
 export OUT_DIR=$HOME/recovery-images
 mkdir -p "$OUT_DIR"
 
-TWRP_TREE=$HOME/twrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
+TWRP_TREE=$HOME/recovery-sources/twrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/92-build-twrp12.sh"
 ```
 

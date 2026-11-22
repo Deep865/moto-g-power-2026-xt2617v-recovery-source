@@ -4,23 +4,24 @@ Pitch Black Recovery Project, built from the **12.1** PBRP manifest. It is
 TWRP-based with a different, more colourful UI. Same hardware support as the other
 two.
 
-## Sync
+## Fetch the base once
+
+From the root of this repo:
 
 ```bash
-mkdir -p "$HOME/pbrp_12.1" && cd "$HOME/pbrp_12.1"
-repo init --depth=1 \
-  -u https://github.com/PitchBlackRecoveryProject/manifest_pb -b android-12.1
-repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
+RECOVERIES="pbrp" ./scripts/fetch-sources.sh
 ```
+
+That fetches PBRP 12.1 into `$HOME/recovery-sources/pbrp_12.1`.
 
 ## Build
 
 ```bash
-export DEVICE_TREE=/path/to/moto-g-power-2026-xt2617v-walmart-recovery-source
+export DEVICE_TREE=$PWD
 export OUT_DIR=$HOME/recovery-images
 mkdir -p "$OUT_DIR"
 
-PBRP_TREE=$HOME/pbrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
+PBRP_TREE=$HOME/recovery-sources/pbrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/93-build-pbrp12.sh"
 ```
 

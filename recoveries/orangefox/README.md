@@ -4,22 +4,25 @@ The most feature-rich of the three working recoveries. Built from the latest
 tested OrangeFox **12.1** core (`8cd9df2b4`) and the device-tree fixes in this repo.
 ADB sideload was verified on this image.
 
-## Sync
+## Fetch the base once
+
+From the root of this repo:
 
 ```bash
-git clone https://gitlab.com/OrangeFox/sync.git
-cd sync
-./orangefox_sync.sh --branch 12.1 --path "$HOME/fox_12.1"
+RECOVERIES="orangefox" ./scripts/fetch-sources.sh
 ```
+
+That fetches OrangeFox 12.1 into `$HOME/recovery-sources/fox_12.1`. Everything we
+changed is already in this repo; see [`../../BUILD-FROM-THIS-REPO.md`](../../BUILD-FROM-THIS-REPO.md).
 
 ## Build
 
 ```bash
-export DEVICE_TREE=/path/to/moto-g-power-2026-xt2617v-walmart-recovery-source
+export DEVICE_TREE=$PWD
 export OUT_DIR=$HOME/recovery-images
 mkdir -p "$OUT_DIR"
 
-FOX_TREE=$HOME/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
+FOX_TREE=$HOME/recovery-sources/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/91-build-ofox12-recovery.sh"
 ```
 
