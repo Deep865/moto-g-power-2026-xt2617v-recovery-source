@@ -13,6 +13,11 @@ on early-init
     insmod /vendor/lib/modules/nova_0flash_mmi_v3.ko
     insmod /vendor/lib/modules/omnivision_tcm_0flash_mmi.ko
 
+    # Haptic: regulator first, then AW862x. init loads modules alphabetically,
+    # so aw862x otherwise loads before its dependency and RAM init fails.
+    insmod /lib/modules/regulator-vibrator.ko
+    insmod /lib/modules/aw862x_haptic_nv_v1.ko
+
 on post-fs 
     start boot-hal-1-2
 
