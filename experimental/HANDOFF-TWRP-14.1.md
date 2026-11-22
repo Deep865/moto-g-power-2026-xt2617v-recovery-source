@@ -26,13 +26,13 @@ AOSP 14.1 Soong analysis phase could not fit in memory.
 
 ## Repo
 
-`git@github.com:Deep865/vegas26-recovery-source.git` (private) — the device tree, ported from
+`git@github.com:Deep865/moto-g-power-2026-xt2617v-walmart-recovery-source.git` (private) — the device tree, ported from
 `crabcakes97/moto_G_Play_2026_TWRP` (nevada).
 
 Clone it as `device/motorola/vegas26` inside the AOSP tree:
 
 ```bash
-git clone git@github.com:Deep865/vegas26-recovery-source.git device/motorola/vegas26
+git clone git@github.com:Deep865/moto-g-power-2026-xt2617v-walmart-recovery-source.git device/motorola/vegas26
 ```
 
 ## Build on a 32 GB machine
@@ -53,7 +53,7 @@ mkdir -p ~/twrp && cd ~/twrp
 repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-14.1
 repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
 
-git clone git@github.com:Deep865/vegas26-recovery-source.git device/motorola/vegas26
+git clone git@github.com:Deep865/moto-g-power-2026-xt2617v-walmart-recovery-source.git device/motorola/vegas26
 
 source build/envsetup.sh
 export ALLOW_MISSING_DEPENDENCIES=true

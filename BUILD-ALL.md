@@ -1,49 +1,75 @@
-# Build all three recoveries
+# Build the working recoveries
 
-One device tree (`device/motorola/vegas26`) builds **OrangeFox R12.0**, **TWRP 3.7.1-12**
-and **PBRP 4.x** for the Moto G Power 2026 (`XT2617V`, `vegas26`). All three use the
-**12.1** Android base; 14.1/16.0 do not boot on this A16 vendor.
+This tree builds **OrangeFox R12.0**, **TWRP 3.7.1-12** and **PBRP 4.x** for the
+Moto G Power 2026 (`XT2617V`, `vegas26`) from one device tree. You can build **any
+one** of them; you do not need all three. All use the **12.1** base because that is
+what boots on this Android 16 vendor.
 
-## Prerequisites
+| Recovery | Script | Manifest | Output |
+|---|---|---|---|
+| OrangeFox R12.0 | `scripts/91-build-ofox12-recovery.sh` | OrangeFox sync `12.1` | `OrangeFox-R12.0-vegas26.img` |
+| TWRP 3.7.1-12 | `scripts/92-build-twrp12.sh` | TWRP minimal `twrp-12.1` | `TWRP-3.7.1-12-vegas26.img` |
+| PBRP 4.x | `scripts/93-build-pbrp12.sh` | PBRP `android-12.1` | `PBRP-4.x-vegas26.img` |
 
-- Linux or WSL2 Ubuntu 22.04, 24 GB RAM, ~120 GB free, 16 jobs.
-- `repo`, `git`, `bc bison build-essential ccache curl flex g++-multilib gcc-multilib
-  lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5
-  libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool
-  squashfs-tools xsltproc zip zlib1g-dev python3 python-is-python3 openjdk-17-jdk cpio`.
-- Platform-tools 35.0.0 or 37.0.1 on the PC (37.0.3 can stall on `flash`).
+## Host
+
+Linux or WSL2 Ubuntu 22.04, 16–24 GB RAM, ~120 GB free disk, 16 jobs. A 16 GB host
+can OOM during Soong analysis; close other VMs and use `-j8` if needed.
 
 ```bash
-export DEVICE_TREE=/path/to/moto-g-power-2026-xt2617v-recovery-source
-export OUT_DIR=$PWD/out-images
+sudo apt update
+sudo apt install -y bc bison build-essential ccache curl flex g++-multilib \
+  gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev \
+  lib32z1-dev libelf-dev liblz4-tool libncurses5 libsdl1.2-dev libssl-dev \
+  libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc \
+  zip zlib1g-dev python3 python-is-python3 openjdk-17-jdk cpio
+```
+
+`repo` must be installed and on `PATH`. Use platform-tools 35.0.0 or 37.0.1 on the
+PC for flashing; 37.0.3 can stall on `flash`.
+
+```bash
+export DEVICE_TREE=/path/to/moto-g-power-2026-xt2617v-walmart-recovery-source
+export OUT_DIR=$HOME/recovery-images
 mkdir -p "$OUT_DIR"
 ```
 
-## 1. OrangeFox R12.0 (recommended daily)
+The scripts copy `$DEVICE_TREE` into `device/motorola/vegas26`, so you do not need to
+clone it into each manifest tree.
+
+## 1. OrangeFox R12.0
 
 ```bash
 git clone https://gitlab.com/OrangeFox/sync.git
 cd sync
-./orangefox_sync.sh --branch 12.1 --path ~/fox_12.1
+./orangefox_sync.sh --branch 12.1 --path "$HOME/fox_12.1"
 
-FOX_TREE=~/fox_12.1 DEVICE_TREE="$DEVICE_TREE" OUT_DIR="$OUT_DIR" \
+FOX_TREE=$HOME/fox_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/91-build-ofox12-recovery.sh"
 ```
 
-`91` pins `bootable/recovery` to `3fc9e73f`, applies the two 14.1 backports from
-`patches/12.1/`, skips UPX, fixes the gatekeeper symlinks, and builds with
-`FOX_EXTREME_SIZE_REDUCTION=0`.
+The script:
+
+- checks out the tested `bootable/recovery` commit (`3fc9e73f`);
+- applies `patches/12.1/0001-partition-skip-data-size.patch` and
+  `patches/12.1/0002-alt-block-device-paths.patch`;
+- patches `vendor/recovery/OrangeFox_vendor.sh` to honour `FOX_SKIP_UPX=1`;
+- makes `gatekeeper.*.so` real symlinks;
+- adds `16` to the CTS platform lists;
+- builds `lunch omni_vegas26-eng` + `mka vendorbootimage`.
 
 Output: `$OUT_DIR/OrangeFox-R12.0-vegas26.img`.
 
 ## 2. TWRP 3.7.1-12
 
 ```bash
-mkdir -p ~/twrp_12.1 && cd ~/twrp_12.1
-repo init --depth=1 -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git -b twrp-12.1
+mkdir -p "$HOME/twrp_12.1" && cd "$HOME/twrp_12.1"
+repo init --depth=1 \
+  -u https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp.git \
+  -b twrp-12.1
 repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
 
-TWRP_TREE=~/twrp_12.1 DEVICE_TREE="$DEVICE_TREE" OUT_DIR="$OUT_DIR" \
+TWRP_TREE=$HOME/twrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/92-build-twrp12.sh"
 ```
 
@@ -52,17 +78,34 @@ Output: `$OUT_DIR/TWRP-3.7.1-12-vegas26.img`.
 ## 3. PBRP 4.x
 
 ```bash
-mkdir -p ~/pbrp_12.1 && cd ~/pbrp_12.1
-repo init --depth=1 -u https://github.com/PitchBlackRecoveryProject/manifest_pb -b android-12.1
+mkdir -p "$HOME/pbrp_12.1" && cd "$HOME/pbrp_12.1"
+repo init --depth=1 \
+  -u https://github.com/PitchBlackRecoveryProject/manifest_pb -b android-12.1
 repo sync -c -j8 --force-sync --no-clone-bundle --no-tags
 
-PBRP_TREE=~/pbrp_12.1 DEVICE_TREE="$DEVICE_TREE" OUT_DIR="$OUT_DIR" \
+PBRP_TREE=$HOME/pbrp_12.1 DEVICE_TREE=$DEVICE_TREE OUT_DIR=$OUT_DIR \
   "$DEVICE_TREE/scripts/93-build-pbrp12.sh"
 ```
 
-`93` creates `pb_vegas26.mk` (inherits `vendor/pb`) and adds `pb_vegas26-eng`.
+`93` creates `pb_vegas26.mk` (inheriting `vendor/pb`) and adds
+`pb_vegas26-eng` to the lunch choices.
 
 Output: `$OUT_DIR/PBRP-4.x-vegas26.img`.
+
+## Build all three
+
+After syncing the three trees:
+
+```bash
+DEVICE_TREE=$DEVICE_TREE \
+FOX_TREE=$HOME/fox_12.1 \
+TWRP_TREE=$HOME/twrp_12.1 \
+PBRP_TREE=$HOME/pbrp_12.1 \
+OUT_DIR=$OUT_DIR \
+  "$DEVICE_TREE/scripts/build-all-three.sh"
+```
+
+Build a subset with `RECOVERIES="orangefox pbrp"` (space-separated).
 
 ## Device-tree fixes carried by this repo
 
@@ -75,32 +118,52 @@ These are why the source builds boot; do not remove them:
 | `recovery/root/vendor/lib64/hw/gatekeeper.default.so` | symlink to `libSoftGatekeeper.so` |
 | `recovery/root/system/etc/recovery.fstab` | minimal working TWRP fstab |
 | `recovery/root/init.recovery.mt6835.rc` | `regulator-vibrator` then `aw862x` at early-init |
-| `recovery/root/init.recovery.usb.rc` | sideload stops `adbd`, configures the gadget |
-| `recovery/root/init.recovery.usb.rc` | LF, UTF-8 text |
+| `recovery/root/init.recovery.usb.rc` | sideload stops `adbd`, configures the gadget; LF text |
 
-`91` also sets `FOX_SKIP_UPX=1` (OrangeFox's build always UPX-compresses
-`/sbin` and `/system/bin`; the packed `init`/`recovery` never reached the UI here).
+`91` also sets `FOX_SKIP_UPX=1`; OrangeFox otherwise UPX-compresses `/sbin` and
+`/system/bin` and the packed `init`/`recovery` never reach the UI here.
 
 ## Size limit
 
-The bootloader accepts roughly **55.5 MB** of `vendor_boot` content. The 12.1 builds
-fit (OrangeFox ~55.1 MB, TWRP ~52.8 MB, PBRP ~55.1 MB). Do not add large fonts or the
-full stock module set; the 203-module set in this tree is the working one.
+The bootloader accepts roughly **55.5 MB** of `vendor_boot` content. The tested 12.1
+builds fit (OrangeFox ~55.1 MB, TWRP ~52.8 MB, PBRP ~54.9 MB). Do not add large
+fonts or the full stock module set; the 203-module set in this tree is the working
+one.
 
 ## Verify
 
 ```bash
-python3 scripts/extract_frags.py "$OUT_DIR/OrangeFox-R12.0-vegas26.img" /tmp/frags
+python3 "$DEVICE_TREE/scripts/extract_frags.py" \
+  "$OUT_DIR/OrangeFox-R12.0-vegas26.img" /tmp/frags
 ```
 
-Expected: `VENDOR_BOOT_HDR`, header 4, page 4096, DTB `183530`, two fragments
-(`platform` + `recovery`), total under 67,108,864.
+Expected: `VNDRBOOT`, header 4, page 4096, DTB `183530` bytes, two fragments
+(`platform` + `recovery`), total 67,108,864 bytes. `scripts/verify_built.py` can
+compare a fresh image with a known-good/stock image.
 
-## Flash
+## Flash and test
 
 ```powershell
-fastboot flash vendor_boot_a <image>
+fastboot flash vendor_boot_a <image>.img
 ```
 
-Then bootloader → **Recovery mode** → Power. `fastboot reboot recovery` boots Android
-on this unit. Keep the stock `vendor_boot` for revert.
+Then **bootloader menu → Volume Down → Recovery mode → Power**. `fastboot reboot
+recovery` boots Android on this unit. Keep the stock `vendor_boot_a` for revert.
+
+The on-device self-test is `scripts/recovery-selftest.sh`; push it to `/tmp`, run it
+in the recovery shell, and read `/tmp/recovery_selftest.txt`. The Windows harness
+used here is `test-recovery.ps1` in the docs repo (PIN 1234 in the test session).
+
+## Not supported: 14.1 / 16.0
+
+Both OrangeFox 14.1 and 16.0 build but do not reach a usable recovery UI on this
+A16 vendor, and full images can exceed the size limit. They are **not** part of the
+supported build. Historical notes and scripts are in
+[`experimental/`](experimental/README.md); useful fixes are tracked in
+[`experimental/BACKPORT-ROADMAP.md`](experimental/BACKPORT-ROADMAP.md).
+
+## Flash the published images instead
+
+If you only want a working recovery, do not build at all:
+<https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery/releases/tag/2026-11-22>
+has the three tested images, the recovery pack and the full walkthrough.

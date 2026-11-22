@@ -1,119 +1,67 @@
-# Source status — vegas26
+# Source status — Moto G Power 2026 (`XT2617V`, Walmart / Straight Talk)
 
 Last updated: 2026-11-22.
 
-## OrangeFox 12.1 source (working, 2026-11-22)
+## Supported: three working recoveries
 
-The working XDA R12.0 image is now reproducible from this tree.
+All three build from this tree on the **12.1** core and were re-tested on the device
+on 2026-11-22 with an encrypted `/data` and PIN `1234`:
 
-- Branch `fox_12.1`; `bootable/recovery` pinned to `3fc9e73f` (2026-08-21), the
-  codebase recorded in the working image.
-- Build: `scripts/90-build-ofox12-source.sh` with `FOX_SKIP_UPX=1` and
-  `FOX_EXTREME_SIZE_REDUCTION=0`.
-- Fixes: no UPX; all device-tree text files LF (a CRLF `prepdecrypt.sh` shebang
-  breaks init); the two gatekeeper HAL aliases are symlinks, not flattened text;
-  minimal working `recovery.fstab`.
-- Verified on-device: UI, touch (`ft8725`), FBE `/data` decrypt, backup.
-- Flashed image SHA-256 `88510c28…` (a fresh build may differ only by build ID).
+| Recovery | Script | Self-test | SHA-256 |
+|---|---|---:|---|
+| OrangeFox R12.0 | `scripts/91-build-ofox12-recovery.sh` | **17/17** + sideload | `5714ece2…f9b7` |
+| TWRP 3.7.1-12 | `scripts/92-build-twrp12.sh` | **17/17** | `0a241558…c5d7` |
+| PBRP 4.x | `scripts/93-build-pbrp12.sh` | **17/17** | `c899f61e…77cb` |
 
-## Three working recoveries (2026-11-22)
+Verified on all three: UI, FT8725 touch (`fts_ts` on `/dev/input/event2`), FBE
+`/data` decrypt, `/sdcard` read/write, gatekeeper symlink, AW862x haptics, MTP/ADB
+and six 1080×2388 panel modules. OrangeFox also completed an ADB sideload.
 
-All on the 12.1 core, same device tree, same fixes (LF text, gatekeeper symlinks,
-minimal fstab, no UPX, haptic order, sideload adbd stop):
+Build one at a time with the per-recovery sheets in [`recoveries/`](recoveries/) or
+all three with [`BUILD-ALL.md`](BUILD-ALL.md).
 
-- **OrangeFox R12.0** — `scripts/91-build-ofox12-recovery.sh`
-  (+ two 14.1 backports: skip data-size scan before decrypt; `/dev/block/by-name`
-  fallbacks). Sideload verified.
-- **TWRP 3.7.1-12** — `scripts/92-build-twrp12.sh`.
-- **PBRP 4.x** — `scripts/93-build-pbrp12.sh`.
+## What is in the tree
 
-14.1 and 16.0 bootloop on this A16 vendor and their full images exceed the ~55.5 MB
-vendor_boot limit; do not offer them. Tests: 17/17 self-checks on all three
-(UI, touch, FBE decrypt, backups, haptics, MTP/ADB).
+- One device tree (`device/motorola/vegas26`) used by all three manifests.
+- OrangeFox 14.1 → 12.1 backports:
+  - `0001-partition-skip-data-size.patch` — skip the data-size scan before decrypt.
+  - `0002-alt-block-device-paths.patch` — fall back to `/dev/block/by-name`.
+- LF text, real gatekeeper symlinks, minimal fstab, haptic load order, sideload
+  `adbd` handling and no UPX.
+- Stock FT8725 touch module from `vendor_dlkm`; the bundled G Play module fails
+  with `ENODEV` on this board.
 
-## TWRP 14.1 (this tree)
+## Tested binaries and full phone guide
 
-- Manifest: `minimal-manifest-twrp/platform_manifest_twrp_aosp`, branch `twrp-14.1`.
-- Lunch: `twrp_vegas26-ap2a-eng`.
-- Target: `vendorbootimage`.
-- Result: builds; the image passes every header/DTB/fragment check and flashes.
-- Boot result: **does not reach a usable UI** on this Android 16 vendor. Observed a
-  glitch/reboot or a “hello moto” hang. pstore shows the TWRP userspace failing to create
-  the MTK block devices (`boot_a`, `super`, `metadata`, `vbmeta_a`, `vbmeta_system_a`).
-- A hybrid (stock A16 vendor ramdisk + TWRP 14.1 recovery binary/libs) also hangs at the
-  logo. Packaging/DTB/header are proven; the blocker is the 14.1 userspace.
+<https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-recovery>
 
-A14 fixes are in `scripts/10-build-14.1.sh` / `scripts/11-rebuild.sh` and are summarized
-in `BUILD.md`.
+The docs repo contains the complete path for a Walmart / Straight Talk unit:
+Test DPC SIM-screen bypass, temporary root, LK patch and bootloader unlock, Magisk,
+LineageOS 23.2 microG GSI, recovery flash, modem unlock and revert.
 
-## OrangeFox R12.0 (known-good binary)
+## Experimental: 14.1 / 16.0
 
-The recovery that actually boots on this unit is an **OrangeFox R12.0** image from the
-XDA thread, rebuilt with the **phone’s own `vendor_dlkm` Focaltech FT8725 module**. The
-older “14.1-based” label was wrong; `REPRODUCE.md` and the R12.0 base are correct. The
-TWRP 14.1 source and the OrangeFox 14.1/16.0 source builds are newer controls, not the
-working daily recovery.
+Not supported. Both OrangeFox branches build but do not reach a usable recovery UI
+on this Android 16 vendor; their full images can also exceed the ~55.5 MB
+`vendor_boot` content limit. TWRP 14.1 has the same userspace blocker.
 
-- Base: `vegas_ofox.img` (OrangeFox R12.0 unofficial; DTB `183530` /
-  `50cf2684…`, 1080×2388 panel modules).
-- Touch: stock module `focaltech_0flash_mmi_v3.ko` (234,560 bytes, MD5 `c0af43…`)
-  replaces the image’s 412,600-byte variant (MD5 `85263c…`) that fails with `ENODEV`.
-- Result: `vegas_ofox_fixed.img`, SHA-256 `ddcc5967…`.
-- Working: touch, `/data` decryption, backup/restore, MTP, ADB.
-- **Tested with the LineageOS GSI installed**: OrangeFox still boots, touch works
-  (`fts_ts` / event2), and `/data` decrypts (dm-7 mounted, `/sdcard` accessible).
+- Historical notes: [`experimental/README.md`](experimental/README.md) and
+  [`experimental/BUILD-14.1-16.0.md`](experimental/BUILD-14.1-16.0.md)
+- Old scripts: `scripts/experimental/` (kept for reference; not turnkey)
+- What we want to bring into 12.1:
+  [`experimental/BACKPORT-ROADMAP.md`](experimental/BACKPORT-ROADMAP.md)
 
-Reproduction: docs repo `REPRODUCE.md` + `scripts/60-repack-ofox-touch.sh`.
+## Modem
 
-## GSI (tested)
+The modem/network lock lives in `md1img`, not the bootloader. `vegas-freedom` was
+audited and an experimental patched image was flashed to `md1img_a` only; there was
+no SIM available, so **network unlock is not verified**. Never publish
+`md1img`/IMEI/`nvram`/`nvdata`/`seccfg`/`persist`/`frp`/`protect*` dumps. Details:
+docs repo `docs/07-modem-unlock.md`.
 
-LineageOS 23.2 microG (Android 16) is installed on `system_a` and boots:
+## Cautions
 
-- `ro.build.version.release=16`
-- `ro.lineage.version=23.2-20261118-UNOFFICIAL-GSI`
-- `/data` encrypted (`ro.crypto.state=encrypted`)
-- no SIM (`gsm.sim.state=ABSENT,NOT_READY`) — used as a Wi-Fi backup phone
-- OrangeFox 14.1 recovery decrypts its `/data` and touch works
-
-Flashing the GSI does **not** SIM/network unlock the modem. Bootloader unlock and SIM
-lock are independent; the lock lives in `md1img`.
-
-## OrangeFox 16.0 (experimental, not a working recovery)
-
-`fox_16.0` is an Android 16 OrangeFox branch. The build compiles and verifies, but the
-result is not a working recovery yet.
-
-- `orangefox_sync.sh --branch 16.0` completed successfully.
-- `lunch omni_vegas26-bp2a-eng`; build fixes: 4K/16K prebuilt page size, nano race,
-  `vendorsetup.sh`.
-- Built image `vendor_boot_ofox16.img`, SHA-256 `55c8175c…`; header/DTB/fragments PASS.
-- **16.0 platform + 16.0 recovery** (and the slim recovery): logo → fastboot; no kernel
-  log. The 16.0-built platform is the leading suspect.
-- **R12.0 platform + 16.0 recovery**: loads; Android boots; the 16.0 recovery only draws
-  the OrangeFox splash, never the menu. This is a userspace/theme failure.
-- The slim recovery removed the Chinese theme font; the font-kept test was invalid because
-  it also removed three panel modules (no splash, bootloop).
-- **Full 16.0 recovery on the R12.0 platform** is 57.45 MB and hits the bootloader size
-  limit (logo → fastboot). The size limit is between 55.57 MB (working R12.0) and
-  57.45 MB.
-- The old pstore panic is the TWRP 14.1 panic (initrd 54,896K), not a 16.0 log.
-
-Full details/hashes: docs repo `docs/05-ofox16.md`.
-
-## OrangeFox 14.1 source control
-
-`fox_14.1` sync completed after retrying past an AOSP Gitiles HTTP 429 quota. The build
-uses the A14 TWRP device tree. This is a newer control, not the exact working image; the
-working image is R12.0. The true source control is the 12.1/R12.0 branch.
-
-## SIM / modem
-
-`vegas-freedom` offline check/build on the stock `md1img_a` passed its audit for this
-`-4-3` unit, but **nothing was flashed**. Only `md1img_a` is ever flashed; never
-`md1img_b`/`lk`/`preloader`/`seccfg`/`gpt`/`nvram`/`nvdata`/`protect*`. Verification
-needs a non-Tracfone SIM. See docs `docs/07-modem-unlock.md` and `docs/06-sim-setup.md`.
-
-## TWRP-branded variant
-
-After the OrangeFox 16.0 source build boots, a TWRP-branded variant is mostly theme/UI
-and branding on the same recovery core. Do that later.
+- Flash only `vendor_boot_a`; keep the stock image for revert.
+- Never relock the bootloader with modified `lk`/`init_boot`.
+- Do not flash another device's recovery/ROM.
+- Build on Linux/WSL2; Windows CRLF and flattened symlinks break the boot.

@@ -1,61 +1,51 @@
 # Scripts
 
-These are the exact scripts used during this work on an `XT2617V` (`vegas26`).
-They are **not turnkey**: replace every `<you>` path and provide the AOSP/TWRP tree and
-the base OrangeFox image. Nothing device-unique is included.
+The supported build path is three scripts, one per working recovery:
 
-## Build / repack (WSL2 Ubuntu 22.04)
+| Script | Recovery | Output |
+|---|---|---|
+| `91-build-ofox12-recovery.sh` | OrangeFox R12.0 | `OrangeFox-R12.0-vegas26.img` |
+| `92-build-twrp12.sh` | TWRP 3.7.1-12 | `TWRP-3.7.1-12-vegas26.img` |
+| `93-build-pbrp12.sh` | PBRP 4.x | `PBRP-4.x-vegas26.img` |
+| `build-all-three.sh` | all / subset | all three |
 
-| Script | Purpose |
-|---|---|
-| `10-build-14.1.sh` | full TWRP 14.1 build: apt deps, `repo init/sync`, copy device tree, apply A14 fixes, `lunch twrp_vegas26-ap2a-eng`, `mka vendorbootimage` |
-| `11-rebuild.sh` | incremental rebuild with the same fixes (no apt/sync) |
-| `50-build-hybrid.sh` | stock A16 vendor ramdisk + TWRP 14.1 `recovery` binary/libs, single-platform repack |
-| `60-repack-ofox-touch.sh` | replace OrangeFox's focaltech module with the stock FT8725 module, rebuild the two-fragment vendor_boot |
-| `verify_built.py` | header/DTB/fragment verification against the stock image |
-| `extract_frags.py` | dump vendor_boot fragments (and the largest recovery fragment) |
-| `state.sh`, `kill-build.sh` | long-build supervisor helpers |
+Each builder copies the tree to `device/motorola/vegas26` in the recovery checkout,
+applies the fixes, runs `lunch` + `mka vendorbootimage`, and copies the padded image
+to `$OUT_DIR`.
 
-Assumptions:
-
-- TWRP tree at `/root/twrp` (see `docs/02-recovery.md`).
-- OrangeFox extraction at `/root/ofox` (`rec/`, `plat/`, `frags/`).
-- Stock revert at `<MotoRoot>/revert/vendor_boot_a.img`.
-- Device tree at `<MotoRoot>/device-tree`, copied to `device/motorola/vegas26`.
-- `mkbootimg` at `/root/twrp/out/host/linux-x86/bin/mkbootimg`.
-
-Run with `bash <script>`, not `sh`.
-
-## Phone (ADB, root)
-
-| Script | Purpose |
-|---|---|
-| `backup-dd.sh` | `dd` all key partitions to `/data/local/tmp/backup-YYYYMMDD` and write `SHA256SUMS.txt` |
-| `backup-sizes.sh` | list partition sizes and free space |
-| `ofox-touch.sh` | mount the real `vendor_dlkm` (`erofs`) and list stock touch modules |
-| `ofox-touch2.sh` | unload the image's modules, load the stock focaltech module, show input devices |
-
-Push and run:
-
-```powershell
-adb push backup-dd.sh /tmp/backup-dd.sh
-adb shell su -c 'sh /tmp/backup-dd.sh'
-```
-
-## Verification examples
+## Required environment
 
 ```bash
-python3 verify_built.py vendor_boot.img revert/vendor_boot_a.img
-python3 extract_frags.py vendor_boot.img /tmp/frags
+DEVICE_TREE=/path/to/moto-g-power-2026-xt2617v-walmart-recovery-source
+OUT_DIR=$HOME/recovery-images
 ```
 
-`verify_built.py` checks magic, header version, page size, kernel/ramdisk addresses,
-DTB size and SHA-256, total size, and the fragment layout against the stock image.
+Then set one of `FOX_TREE`, `TWRP_TREE`, `PBRP_TREE` for the script you run. See
+[`../recoveries/`](../recoveries/) and [`../BUILD-ALL.md`](../BUILD-ALL.md).
+
+## Test / inspect
+
+| Script | Purpose |
+|---|---|
+| `recovery-selftest.sh` | push to `/tmp` in recovery; writes `/tmp/recovery_selftest.txt` (PASS/FAIL/INFO) |
+| `extract_frags.py` | dump vendor_boot header, DTB and fragments |
+| `verify_built.py` | compare header, DTB, addresses, size and fragments against a reference |
+| `backup-dd.sh` | `dd` the key partitions from root Android (keep the output private) |
+| `backup-sizes.sh` | list partition sizes and free space |
+| `start-ofox12.sh` | convenience launcher for an existing OrangeFox 12.1 tree |
+
+Run shell scripts with `bash`, not `sh`.
+
+## Experimental / legacy
+
+`scripts/experimental/` contains the 14.1/16.0 experiments, the older XDA-prebuilt
+repack, and the first 12.1 source build that `91` supersedes. They are kept for
+history and are **not turnkey**: paths and assumptions differ. See
+[`experimental/README.md`](experimental/README.md).
 
 ## Cautions
 
-- `backup-dd.sh` includes `nvram`, `nvdata`, `seccfg`, `persist`, `frp`, `protect*` and
-  `md1img`. Keep those private.
-- The build scripts patch the AOSP tree after sync (CTS assets, `-ndk` names, libtar FBE,
-  FDE stubs, `libbase`, `libscrypt_static`). Re-running them is idempotent.
-- Do not flash anything without verifying the header/DTB and keeping a stock revert.
+- `backup-dd.sh` includes `nvram`, `nvdata`, `seccfg`, `persist`, `frp`, `protect*`
+  and `md1img`. Keep those private.
+- Do not flash without verifying the image and keeping a stock `vendor_boot_a`.
+- The CRLF/symlink traps are why the builders fix the tree after copying it.
