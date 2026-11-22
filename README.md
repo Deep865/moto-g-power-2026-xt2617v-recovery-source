@@ -162,7 +162,7 @@ recoveries/               per-recovery build sheets
   orangefox/README.md
   twrp/README.md
   pbrp/README.md
-patches/12.1/             historical 14.1 backports (now upstream in 8cd9df2b4)
+patches/historical-12.1/             historical 14.1 backports (now upstream in 8cd9df2b4)
 recovery/                 the device tree / recovery ramdisk
 prebuilt/                 DTB and prebuilt modules
 scripts/

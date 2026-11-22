@@ -59,7 +59,7 @@ The script:
   includes the two former 14.1 backports (skip data-size scan; alternate
   `/dev/block/by-name`) plus thermal, bzip2, vibration-default, reboot-recovery and
   double-tap-to-wake fixes;
-- no longer applies the old `patches/12.1/` by hand; they are upstream now;
+- no longer applies the old `patches/historical-12.1/` by hand; they are upstream now;
 - patches `vendor/recovery/OrangeFox_vendor.sh` to honour `FOX_SKIP_UPX=1`;
 - makes `gatekeeper.*.so` real symlinks;
 - adds `16` to the CTS platform lists;

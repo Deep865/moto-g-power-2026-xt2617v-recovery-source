@@ -1,6 +1,6 @@
 # Where every fix is applied
 
-The short answer: **the old `patches/12.1/*.patch` files are not applied any more.**
+The short answer: **the old `patches/historical-12.1/*.patch` files are not applied any more.**
 They were folded into the pinned OrangeFox 12.1 core. The device-tree fixes are
 already files in this repo, and the only source patch during the build is the
 OrangeFox UPX change.
@@ -55,7 +55,7 @@ git -C bootable/recovery reset -q --hard "$FOX_CORE_REV"
 scripts/verify-core.sh
 ```
 
-Pinning the exact commit is why it is no longer patched again. `patches/12.1/` is
+Pinning the exact commit is why it is no longer patched again. `patches/historical-12.1/` is
 kept only for history/review; applying it on top of `8cd9df2b4` would fail because
 the commits are already ancestors.
 

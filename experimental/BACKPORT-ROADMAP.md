@@ -16,7 +16,7 @@ when they are useful, small and testable on the 12.1 core.
 | Reboot Recovery after actions | Completion pages offer Reboot Recovery |
 | Double-tap-to-wake | Optional `FOX_NO_BLANK_DT2W` with `TW_NO_SCREEN_BLANK` |
 
-The two former hand-applied patches live in `patches/12.1/` for history; the
+The two former hand-applied patches live in `patches/historical-12.1/` for history; the
 latest core already contains them. `scripts/91-build-ofox12-recovery.sh` pins the
 core and does not re-apply them.
 
