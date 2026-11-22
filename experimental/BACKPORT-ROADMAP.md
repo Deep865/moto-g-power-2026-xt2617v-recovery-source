@@ -48,8 +48,12 @@ published image remains the normal one. The likely causes are the upstream handl
 packed-coordinate assumption vs. the FT8725 MT-B events, and `TW_NO_SCREEN_BLANK`
 not being applied to the Soong `libguitwrp`/`libminuitwrp` modules.
 
-**Status:** doable in principle, but not worth enabling until the handler is rewritten
-and tested. Not shipped.
+A follow-up MT-B/packed-event handler blocked single-tap wake, but the synthetic
+double-tap test was inconclusive: each injected tap took ~238 ms, and two taps
+exceeded the 450 ms window. It was not shipped. Real-finger timing may work, but
+there is not enough evidence yet.
+
+**Status:** doable in principle; needs a focused UI test pass. Not shipped.
 
 ## Rules
 
