@@ -21,6 +21,8 @@ git -C bootable/recovery fetch -q origin fox_12.1 2>/dev/null || true
 git -C bootable/recovery checkout -q "$FOX_CORE_REV"
 git -C bootable/recovery reset -q --hard "$FOX_CORE_REV"
 echo "OrangeFox recovery core: $(git -C bootable/recovery log -1 --format='%h %s')"
+bash "$DEVICE_TREE/scripts/verify-core.sh" "$FOX_TREE" "$FOX_CORE_REV" || {
+  echo "verify-core failed; refusing to build"; exit 1; }
 
 # OrangeFox always UPX-compresses /sbin and /system/bin; skip it.
 UPX=vendor/recovery/OrangeFox_vendor.sh

@@ -82,6 +82,8 @@ fixes. Do not copy it manually.
 | `recovery/`, `prebuilt/`, `BoardConfig.mk`, `*.mk` | the actual `vegas26` device tree |
 | `scripts/91`, `92`, `93`, `build-all-three.sh` | working builders for all three recoveries |
 | `scripts/recovery-selftest.sh` | the 17/17 on-device test |
+| `scripts/verify-core.sh` | fails the build if the pinned OrangeFox core loses a required fix |
+| `FIXES.md` | where every device-tree/core/build-time fix is applied |
 | `patches/12.1/` | historical 14.1 backports, now upstream in the pinned 12.1 core |
 | `sources.lock` | exact upstream URLs, branches, manifest commits and core hash |
 | `third_party/bootable-recovery-8cd9df2b4.tar.xz` | preserved copy of the exact OrangeFox recovery core |

@@ -15,6 +15,7 @@ and the six 1080×2388 panel modules. Pick by UI; they are equally functional.
 
 - **Choose one:** [`recoveries/README.md`](recoveries/README.md)
 - **Build one or all three:** [`BUILD-ALL.md`](BUILD-ALL.md)
+- **Where each fix is applied:** [FIXES.md](FIXES.md)
 - **Tested binaries and the full phone guide:** <https://github.com/Deep865/moto-g-power-2026-xt2617v-walmart-unlock-degoogle-guide>
 
 This repo is the **source/build** half. The other repo is the **walkthrough/release**
@@ -153,6 +154,7 @@ Do not remove them; each one is the difference between a build and a boot:
 README.md                 this file
 BUILD-ALL.md              the full build guide for all three
 BUILD-FROM-THIS-REPO.md   one-repo clone + fetch + build path
+FIXES.md                  map of every change and where it is applied
 sources.lock              exact upstream revisions
 third_party/              preserved OrangeFox/TWRP/PBRP cores
 STATUS.md                 current status and what was tested

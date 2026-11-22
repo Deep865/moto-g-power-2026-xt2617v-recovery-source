@@ -30,6 +30,7 @@ Then set one of `FOX_TREE`, `TWRP_TREE`, `PBRP_TREE` for the script you run. See
 | `recovery-selftest.sh` | push to `/tmp` in recovery; writes `/tmp/recovery_selftest.txt` (PASS/FAIL/INFO) |
 | `extract_frags.py` | dump vendor_boot header, DTB and fragments |
 | `verify_built.py` | compare header, DTB, addresses, size and fragments against a reference |
+| `verify-core.sh` | assert the pinned OrangeFox core contains the required backports/fixes |
 | `backup-dd.sh` | `dd` the key partitions from root Android (keep the output private) |
 | `backup-sizes.sh` | list partition sizes and free space |
 | `start-ofox12.sh` | convenience launcher for an existing OrangeFox 12.1 tree |
