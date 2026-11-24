@@ -59,10 +59,10 @@ on this Android 16 vendor; their full images can also exceed the ~55.5 MB
 ## Modem
 
 The modem/network lock lives in `md1img`, not the bootloader. `vegas-freedom` was
-audited and an experimental patched image was flashed to `md1img_a` only; there was
-no SIM available, so **network unlock is not verified**. Never publish
-`md1img`/IMEI/`nvram`/`nvdata`/`seccfg`/`persist`/`frp`/`protect*` dumps. Details:
-docs repo `docs/07-modem-unlock.md`.
+audited and an experimental patched image was flashed to `md1img_a` only. **Network
+unlock is verified (2026-11-23):** a non-Tracfone SIM loads as `LOADED` and AT&T LTE
+data works. Never publish `md1img`/IMEI/`nvram`/`nvdata`/`seccfg`/`persist`/`frp`/
+`protect*` dumps. Details: docs repo `docs/07-modem-unlock.md`.
 
 ## Cautions
 
